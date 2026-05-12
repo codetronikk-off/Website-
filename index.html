@@ -1,0 +1,3586 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta id="theme-color-meta" name="theme-color" content="#000000" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <script>
+      (function (key) {
+        var root = document.documentElement;
+        function stored() {
+          try {
+            return localStorage.getItem(key);
+          } catch (e) {
+            return null;
+          }
+        }
+        function dark() {
+          var v = stored();
+          if (v === "light") return false;
+          if (v === "dark") return true;
+          return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        }
+        var isDark = dark();
+        root.classList.toggle("dark", isDark);
+        var meta = document.getElementById("theme-color-meta");
+        if (meta) meta.setAttribute("content", isDark ? "#000000" : "#ffffff");
+      })("codetronik-color-scheme");
+    </script>
+    <link id="site-favicon-16" rel="icon" type="image/png" sizes="16x16" href="assets/brand/favicon-16.png" />
+    <link id="site-favicon-32" rel="icon" type="image/png" sizes="32x32" href="assets/brand/favicon-32.png" />
+    <link id="site-favicon" rel="icon" type="image/svg+xml" href="assets/brand/favicon-light.svg" />
+    <script>
+      (function () {
+        var dark = document.documentElement.classList.contains("dark");
+        var svg = document.getElementById("site-favicon");
+        var i16 = document.getElementById("site-favicon-16");
+        var i32 = document.getElementById("site-favicon-32");
+        if (svg) svg.setAttribute("href", dark ? "assets/brand/favicon-dark.svg" : "assets/brand/favicon-light.svg");
+        if (i16) i16.setAttribute("href", dark ? "assets/brand/favicon-dark-16.png" : "assets/brand/favicon-16.png");
+        if (i32) i32.setAttribute("href", dark ? "assets/brand/favicon-dark-32.png" : "assets/brand/favicon-32.png");
+      })();
+    </script>
+    <meta
+      name="description"
+      content="CodeTronik builds custom websites, Shopify stores, applications, and practical AI integrations for growing businesses."
+    />
+    <title>CodeTronik | Software house for web, commerce, apps, and AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              canvas: "var(--color-canvas)",
+              surface: "var(--color-surface)",
+              elevated: "var(--color-elevated)",
+              line: "var(--color-line)",
+              "line-strong": "var(--color-line-strong)",
+              ink: "var(--color-ink)",
+              muted: "var(--color-muted)",
+              heading: "var(--color-heading)",
+              action: "var(--color-action)",
+              "action-hover": "var(--color-action-hover)",
+              onaction: "var(--color-on-action)",
+            },
+            fontFamily: {
+              sans: ["Open Sans", "system-ui", "sans-serif"],
+              display: ["Poppins", "system-ui", "sans-serif"],
+            },
+            maxWidth: {
+              content: "72rem",
+            },
+            boxShadow: {
+              card: "var(--shadow-card)",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      /*
+        UI Pro Max: B2B palette (light) + glassmorphism (styles.csv): blur 10-20px, translucent
+        surface, 1px hairline border, WCAG contrast (ux-guidelines.csv).
+        Dark: monochrome only. Black canvas, white type, white CTAs with black text (Vercel-style
+        focus/hit targets unchanged in markup).
+        Soft UI (design-system): light shadow-card; dark shadow off so glass edges carry depth.
+      */
+      :root {
+        --color-canvas: #ffffff;
+        --color-surface: #ffffff;
+        --color-elevated: #fafafa;
+        --color-line: #e5e5e5;
+        --color-line-strong: #d4d4d4;
+        --color-ink: #0a0a0a;
+        --color-muted: #525252;
+        --color-heading: #000000;
+        /* Light: monochrome accent (replaces blue); CTAs invert white ↔ black on hover via .btn-primary rules. */
+        --color-action: #0a0a0a;
+        --color-action-hover: #262626;
+        --color-on-action: #ffffff;
+        --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.06), 0 12px 28px rgba(0, 0, 0, 0.08);
+        --glass-bg: rgba(255, 255, 255, 0.82);
+        --glass-border: rgba(0, 0, 0, 0.08);
+        --glass-blur: 14px;
+        --glass-saturate: 1.06;
+        --glass-chip-bg: rgba(255, 255, 255, 0.94);
+        --glass-chip-border: rgba(0, 0, 0, 0.1);
+        /* Light UI: sitewide neutral wash (white / soft gray / black mist only). */
+        --light-body-gradient: linear-gradient(
+          165deg,
+          #ffffff 0%,
+          #f5f5f5 32%,
+          #ffffff 58%,
+          #fafafa 100%
+        );
+        --light-mesh-radial-a: radial-gradient(ellipse 125% 95% at 12% -15%, rgba(0, 0, 0, 0.055), transparent 54%);
+        --light-mesh-radial-b: radial-gradient(ellipse 95% 75% at 92% 8%, rgba(0, 0, 0, 0.04), transparent 50%);
+        --light-mesh-radial-c: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(0, 0, 0, 0.028), transparent 52%);
+      }
+      html.dark {
+        --color-canvas: #000000;
+        --color-surface: #000000;
+        --color-elevated: #000000;
+        --color-line: rgba(255, 255, 255, 0.14);
+        --color-line-strong: rgba(255, 255, 255, 0.28);
+        --color-ink: #ffffff;
+        --color-muted: rgba(255, 255, 255, 0.72);
+        --color-heading: #ffffff;
+        --color-action: #ffffff;
+        --color-action-hover: #e5e5e5;
+        --color-on-action: #000000;
+        --shadow-card: 0 0 #0000;
+        --glass-bg: rgba(255, 255, 255, 0.06);
+        --glass-border: rgba(255, 255, 255, 0.16);
+        --glass-blur: 16px;
+        --glass-saturate: 1.05;
+        --glass-chip-bg: rgba(255, 255, 255, 0.1);
+        --glass-chip-border: rgba(255, 255, 255, 0.2);
+      }
+      html {
+        color-scheme: light dark;
+      }
+      html.dark {
+        color-scheme: dark;
+      }
+      html:not(.dark) {
+        color-scheme: light;
+      }
+      html:not(.dark) body {
+        background-color: var(--color-canvas);
+        background-image: var(--light-body-gradient);
+      }
+      html.dark body {
+        background-color: #000000;
+      }
+      /* Theme toggle: icons are flex-centered (no stacked absolute SVGs — avoids broken/clipped glyphs). */
+      html:not(.dark) .btn-primary:focus-visible {
+        outline: 2px solid var(--color-heading);
+        outline-offset: 3px;
+      }
+      html:not(.dark) a.btn-primary:hover:focus-visible,
+      html:not(.dark) button.btn-primary:hover:focus-visible {
+        outline: 2px solid #ffffff;
+        outline-offset: 3px;
+      }
+      /* Light: primary pills = white fill + black type; hover inverts to black fill + white type. */
+      html:not(.dark) a.btn-primary,
+      html:not(.dark) button.btn-primary {
+        background-color: #ffffff !important;
+        color: #0a0a0a !important;
+        border: 1px solid #0a0a0a;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        transition:
+          background-color 0.2s ease,
+          color 0.2s ease,
+          border-color 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+      html:not(.dark) a.btn-primary:hover,
+      html:not(.dark) button.btn-primary:hover {
+        background-color: #0a0a0a !important;
+        color: #ffffff !important;
+        border-color: #0a0a0a;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+      }
+      html:not(.dark) a.btn-primary {
+        text-decoration: none;
+      }
+      /* Light: glass outline CTA — same white → black hover language. */
+      html:not(.dark) .btn-surface-invert {
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        transition:
+          background-color 0.2s ease,
+          color 0.2s ease,
+          border-color 0.2s ease,
+          opacity 0.2s ease;
+      }
+      html:not(.dark) .btn-surface-invert:hover {
+        background-color: #0a0a0a !important;
+        color: #ffffff !important;
+        border-color: #0a0a0a;
+        opacity: 1 !important;
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+      }
+      /* Light: icon-only chip (theme) — invert on hover for parity with CTAs. */
+      html:not(.dark) #theme-toggle:hover {
+        background-color: #0a0a0a !important;
+        color: #ffffff !important;
+        border-color: #0a0a0a;
+      }
+      /* Dark: same invert — white pill + black type → hover black pill + white type (light border on hover so the edge reads on #000 canvas). */
+      html.dark a.btn-primary,
+      html.dark button.btn-primary {
+        background-color: #ffffff !important;
+        color: #0a0a0a !important;
+        border: 1px solid #0a0a0a;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+        transition:
+          background-color 0.2s ease,
+          color 0.2s ease,
+          border-color 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+      html.dark a.btn-primary:hover,
+      html.dark button.btn-primary:hover {
+        background-color: #0a0a0a !important;
+        color: #ffffff !important;
+        border-color: #ffffff;
+        box-shadow: 0 4px 18px rgba(255, 255, 255, 0.1);
+      }
+      html.dark a.btn-primary {
+        text-decoration: none;
+      }
+      html.dark .btn-surface-invert {
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        transition:
+          background-color 0.2s ease,
+          color 0.2s ease,
+          border-color 0.2s ease,
+          opacity 0.2s ease;
+      }
+      html.dark .btn-surface-invert:hover {
+        background-color: #ffffff !important;
+        color: #0a0a0a !important;
+        border-color: #ffffff;
+        opacity: 1 !important;
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+      }
+      html.dark #theme-toggle:hover {
+        background-color: #ffffff !important;
+        color: #0a0a0a !important;
+        border-color: rgba(255, 255, 255, 0.9);
+      }
+      .glass {
+        background: var(--glass-bg);
+        -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+        backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+        border: 1px solid var(--glass-border);
+        box-shadow: var(--shadow-card);
+      }
+      html.dark .glass {
+        box-shadow: none;
+      }
+      .glass.border-dashed {
+        border-style: dashed;
+      }
+      .glass-chip {
+        background: var(--glass-chip-bg);
+        -webkit-backdrop-filter: blur(10px) saturate(var(--glass-saturate));
+        backdrop-filter: blur(10px) saturate(var(--glass-saturate));
+        border: 1px solid var(--glass-chip-border);
+      }
+      html.dark .glass-chip {
+        box-shadow: none;
+      }
+      /* Header wordmark – full SVG (light + dark assets in assets/brand/). */
+      .site-logo {
+        display: block;
+        height: 28px;
+        width: auto;
+        max-width: min(200px, 46vw);
+        transition: opacity 0.2s ease;
+      }
+      .group:hover .site-logo,
+      .group:focus-visible .site-logo {
+        opacity: 0.9;
+      }
+      @media (min-width: 768px) {
+        .site-logo {
+          height: 32px;
+          max-width: 240px;
+        }
+      }
+      .mesh-bg {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background: radial-gradient(ellipse 120% 90% at 15% -20%, rgba(0, 0, 0, 0.045), transparent 52%),
+          radial-gradient(ellipse 90% 70% at 95% 10%, rgba(0, 0, 0, 0.035), transparent 48%),
+          var(--color-canvas);
+      }
+      html:not(.dark) .mesh-bg {
+        background:
+          var(--light-mesh-radial-a),
+          var(--light-mesh-radial-b),
+          var(--light-mesh-radial-c),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(250, 250, 250, 0.55) 45%, #ffffff 100%);
+      }
+      /* No solid #000 here — a base fill hid the sitewide purple flow behind main. */
+      html.dark .mesh-bg {
+        background: radial-gradient(ellipse 100% 80% at 50% -28%, rgba(255, 255, 255, 0.09), transparent 58%);
+      }
+      /* Hero copy only — soft indigo “mesh / aura” (blur blobs + mesh gradient), not full-page. */
+      .hero-text-ambient {
+        position: absolute;
+        z-index: 0;
+        pointer-events: none;
+        isolation: isolate;
+        inset: -2rem -1.5rem 0 -2rem;
+        overflow: hidden;
+        border-radius: 0;
+      }
+      @media (min-width: 768px) {
+        .hero-text-ambient {
+          inset: -3.5rem -0.5rem 2rem -3rem;
+        }
+      }
+      .hero-text-ambient__mesh {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse 85% 70% at 15% 8%, rgba(99, 102, 241, 0.14), transparent 55%),
+          radial-gradient(ellipse 65% 60% at 45% 55%, rgba(67, 56, 202, 0.1), transparent 50%),
+          radial-gradient(ellipse 55% 50% at 5% 75%, rgba(88, 28, 135, 0.08), transparent 48%);
+        opacity: 0.85;
+        mix-blend-mode: screen;
+      }
+      html:not(.dark) .hero-text-ambient__mesh {
+        mix-blend-mode: normal;
+        opacity: 1;
+        background:
+          radial-gradient(ellipse 88% 72% at 14% 10%, rgba(0, 0, 0, 0.06), transparent 56%),
+          radial-gradient(ellipse 72% 58% at 82% 28%, rgba(0, 0, 0, 0.045), transparent 52%),
+          radial-gradient(ellipse 62% 48% at 48% 88%, rgba(0, 0, 0, 0.032), transparent 50%);
+      }
+      .hero-text-ambient__blob {
+        position: absolute;
+        border-radius: 50%;
+        will-change: transform;
+        filter: blur(72px);
+        transform: translate3d(0, 0, 0);
+        opacity: 0.9;
+        animation: hero-aura-drift 24s ease-in-out infinite;
+      }
+      .hero-text-ambient__blob--a {
+        top: -28%;
+        left: -8%;
+        width: min(110%, 28rem);
+        height: min(85vw, 22rem);
+        background: radial-gradient(circle at 35% 40%, rgba(109, 40, 217, 0.55) 0%, rgba(55, 48, 163, 0.2) 45%, transparent 68%);
+        animation-delay: 0s;
+        animation-duration: 26s;
+      }
+      .hero-text-ambient__blob--b {
+        top: 8%;
+        left: 18%;
+        width: min(90%, 20rem);
+        height: min(70vw, 16rem);
+        background: radial-gradient(circle at 50% 50%, rgba(79, 70, 229, 0.35) 0%, rgba(30, 27, 75, 0.15) 50%, transparent 70%);
+        animation-delay: -5s;
+        animation-duration: 20s;
+      }
+      .hero-text-ambient__blob--c {
+        top: 38%;
+        left: -12%;
+        width: min(100%, 24rem);
+        height: min(60vw, 15rem);
+        background: radial-gradient(circle at 60% 40%, rgba(91, 33, 182, 0.4) 0%, rgba(30, 27, 75, 0.12) 55%, transparent 72%);
+        animation-delay: -10s;
+        animation-duration: 30s;
+      }
+      @keyframes hero-aura-drift {
+        0%,
+        100% {
+          transform: translate3d(0, 0, 0) scale(1);
+        }
+        50% {
+          transform: translate3d(2.5%, 4.5%, 0) scale(1.04);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .hero-text-ambient__blob {
+          animation: none !important;
+        }
+      }
+      .hero-text-stack {
+        position: relative;
+        z-index: 1;
+      }
+      html:not(.dark) .hero-text-ambient {
+        display: block;
+      }
+      html:not(.dark) .hero-text-ambient__blob {
+        filter: blur(76px);
+        opacity: 0.72;
+      }
+      html:not(.dark) .hero-text-ambient__blob--a {
+        background: radial-gradient(
+          circle at 38% 42%,
+          rgba(0, 0, 0, 0.09) 0%,
+          rgba(0, 0, 0, 0.03) 48%,
+          transparent 72%
+        );
+      }
+      html:not(.dark) .hero-text-ambient__blob--b {
+        background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.065) 0%, rgba(0, 0, 0, 0.02) 52%, transparent 72%);
+      }
+      html:not(.dark) .hero-text-ambient__blob--c {
+        background: radial-gradient(circle at 58% 38%, rgba(0, 0, 0, 0.07) 0%, rgba(0, 0, 0, 0.025) 55%, transparent 74%);
+      }
+      /* Hero decorative doodle (external SVG, recolored via CSS).
+         Keeps pointer events on content; respects reduced motion globally. */
+      .hero-doodle-wrap {
+        pointer-events: none;
+        user-select: none;
+      }
+      .hero-doodle-img {
+        /* Large artboard + lots of negative space in the source SVG —
+           bump the rendered box so the character reads at hero scale. */
+        width: min(120%, clamp(520px, 62vw, 980px));
+        max-width: 1040px;
+        height: auto;
+        opacity: 0.18;
+        filter: invert(1);
+        /* Push the character into frame (SVG has a big artboard).
+           Transform-only so we don't trigger layout work. */
+        transform: translate3d(72px, 12px, 0) scale(1.14);
+      }
+      @media (min-width: 1024px) {
+        .hero-doodle-img {
+          width: min(140%, clamp(720px, 72vw, 1200px));
+          max-width: 1320px;
+          transform: translate3d(120px, 18px, 0) scale(1.2);
+        }
+      }
+      /* Raster hero art — borderless; color/luma tuned to hero ambient (indigo/violet) + #fff type: vivid but still “supporting”. */
+      .hero-engagement-img {
+        width: min(100%, clamp(260px, 82vw, 400px));
+        max-width: 400px;
+        height: auto;
+        display: block;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+        outline: none;
+        object-fit: contain;
+        filter: brightness(0.93) saturate(0.88) contrast(0.99);
+      }
+      html:not(.dark) .hero-engagement-img {
+        filter: brightness(0.97) saturate(0.9) contrast(1);
+      }
+      @media (min-width: 768px) {
+        .hero-engagement-img {
+          width: min(100%, clamp(300px, 36vw, 400px));
+        }
+      }
+      @media (min-width: 1024px) {
+        .hero-engagement-img {
+          width: min(100%, clamp(340px, 32vw, 420px));
+          max-width: 420px;
+        }
+      }
+      /* Dark primary: black ring on white fill; white ring when hovered (black fill) for contrast. */
+      html.dark .btn-primary:focus-visible {
+        outline: 2px solid #000000;
+        outline-offset: 3px;
+      }
+      html.dark a.btn-primary:hover:focus-visible,
+      html.dark button.btn-primary:hover:focus-visible {
+        outline: 2px solid #ffffff;
+        outline-offset: 3px;
+      }
+      /* Nav micro-motion: pop-up hover (UI Pro Max ~200ms; no layout reflow — transform only; Vercel: CSS motion) */
+      .nav-lift {
+        transition: transform 0.22s cubic-bezier(0.34, 1.25, 0.64, 1), color 0.2s ease, opacity 0.2s ease, background-color 0.2s ease;
+        transform: translateY(0);
+      }
+      a.nav-lift {
+        display: inline-block;
+        padding-block: 0.125rem;
+      }
+      .nav-lift:hover {
+        transform: translateY(-4px);
+      }
+      .nav-lift:active {
+        transform: translateY(-1px);
+        transition-duration: 0.12s;
+      }
+      .nav-lift-ctrl {
+        transition:
+          transform 0.22s cubic-bezier(0.34, 1.25, 0.64, 1),
+          opacity 0.2s ease,
+          background-color 0.2s ease,
+          color 0.2s ease,
+          border-color 0.2s ease,
+          box-shadow 0.2s ease;
+        transform: translateY(0);
+      }
+      .nav-lift-ctrl:hover {
+        transform: translateY(-3px);
+      }
+      .nav-lift-ctrl:active {
+        transform: translateY(-1px);
+      }
+      h1,
+      h2,
+      h3 {
+        font-family: Poppins, system-ui, sans-serif;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+        .glass,
+        .glass-chip {
+          -webkit-backdrop-filter: none !important;
+          backdrop-filter: none !important;
+        }
+        .nav-lift,
+        .nav-lift:hover,
+        .nav-lift:active,
+        .nav-lift-ctrl,
+        .nav-lift-ctrl:hover,
+        .nav-lift-ctrl:active {
+          transform: none !important;
+        }
+        .scroll-reveal,
+        .scroll-reveal.is-revealed {
+          opacity: 1 !important;
+          transform: none !important;
+          transition: none !important;
+          will-change: auto !important;
+        }
+      }
+      /* Scroll-triggered text reveal: opacity + translateY only (compositor-
+         friendly). Stagger via transition-delay modifiers. */
+      .scroll-reveal {
+        opacity: 0;
+        transform: translate3d(0, 18px, 0);
+        transition:
+          opacity 0.78s cubic-bezier(0.22, 0.9, 0.24, 1),
+          transform 0.78s cubic-bezier(0.22, 0.9, 0.24, 1);
+        will-change: opacity, transform;
+      }
+      .scroll-reveal.is-revealed {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+        will-change: auto;
+      }
+      .scroll-reveal--delay-1 {
+        transition-delay: 0.09s;
+      }
+      .scroll-reveal--delay-2 {
+        transition-delay: 0.16s;
+      }
+      .scroll-reveal--delay-3 {
+        transition-delay: 0.23s;
+      }
+      .scroll-reveal--delay-4 {
+        transition-delay: 0.3s;
+      }
+      /* ============================================================
+         Projects — two-state card deck (deck + detail)
+         Full-bleed “horizon” in both themes: dark fades to #000 canvas,
+         light fades to --color-canvas with a soft grid for endless shelf.
+         Motion inspired by Motion app's "Made to move" deck.
+         ============================================================ */
+      .project-stage {
+        position: relative;
+        overflow: hidden;
+        isolation: isolate;
+        border-radius: 1.75rem;
+        background: #09090b;
+        border: 0;
+        min-height: 520px;
+        color: #fafafa;
+        transition: min-height 420ms cubic-bezier(0.22, 0.9, 0.24, 1);
+      }
+      /* Dark: dissolve into page black; light: dissolve into site canvas. */
+      html.dark .project-stage,
+      html:not(.dark) .project-stage {
+        background: transparent;
+        border-radius: 0;
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
+        margin-right: calc(50% - 50vw);
+      }
+      /* Soften the atmospheric glow so it reads as ambient depth
+         rather than lighting up a visible rectangular region. */
+      html.dark .project-stage::before {
+        opacity: 0.55;
+      }
+      /* The grid-pattern overlay was also defining a rectangle; mute it
+         in dark mode so only the cards themselves structure the space. */
+      html.dark .project-stage::after {
+        opacity: 0.35;
+      }
+      /* Light horizon: cool mist + grid — same mask as dark for infinite fade. */
+      html:not(.dark) .project-stage::before {
+        opacity: 0.55;
+        background: radial-gradient(ellipse 92% 50% at 50% 106%, rgba(0, 0, 0, 0.06), transparent 56%),
+          radial-gradient(ellipse 74% 46% at 14% -6%, rgba(0, 0, 0, 0.04), transparent 58%),
+          radial-gradient(ellipse 64% 42% at 86% -10%, rgba(0, 0, 0, 0.035), transparent 58%);
+      }
+      html:not(.dark) .project-stage::after {
+        opacity: 0.38;
+        background-image:
+          linear-gradient(rgba(0, 0, 0, 0.06) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+        background-size: 48px 48px;
+      }
+      .project-stage[data-state="detail"] {
+        min-height: 640px;
+        /* Allow vertical scroll so detail copy + CTA are never clipped by overflow:hidden. */
+        overflow-x: hidden;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      @media (min-width: 1200px) {
+        .project-stage[data-state="detail"] {
+          min-height: 600px;
+        }
+      }
+      @media (max-width: 767px) {
+        .project-stage {
+          min-height: 440px;
+          border-radius: 1.25rem;
+        }
+        .project-stage[data-state="detail"] {
+          min-height: 920px;
+        }
+      }
+      @media (max-width: 899px) and (min-width: 768px) {
+        .project-stage[data-state="detail"] {
+          min-height: 820px;
+        }
+      }
+      .project-stage::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        transition: opacity 320ms cubic-bezier(0.22, 0.9, 0.24, 1);
+        background: radial-gradient(ellipse 90% 45% at 50% 110%, rgba(255, 255, 255, 0.08), transparent 55%),
+          radial-gradient(ellipse 70% 45% at 15% -10%, rgba(129, 140, 248, 0.12), transparent 60%),
+          radial-gradient(ellipse 60% 40% at 85% -15%, rgba(244, 114, 182, 0.08), transparent 60%);
+      }
+      .project-stage::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        transition: opacity 320ms cubic-bezier(0.22, 0.9, 0.24, 1);
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+        background-size: 48px 48px;
+        mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, #000 30%, transparent 85%);
+        -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, #000 30%, transparent 85%);
+      }
+      .stage-view {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        transition: opacity 420ms cubic-bezier(0.22, 0.9, 0.24, 1),
+          transform 520ms cubic-bezier(0.22, 0.9, 0.24, 1);
+        will-change: opacity, transform;
+      }
+      .deck-view {
+        display: flex;
+        flex-direction: column;
+        padding: 26px 20px 18px;
+      }
+      /* Edge-fade overlays — far cheaper than a scroller-wide mask-image
+         (which re-rasterizes every frame on scroll). Two static absolutely-
+         positioned panels that paint once and sit above resting cards at
+         z-index 40, below the active card (50+). Color matches the page
+         background so cards dissolve into infinity, not into a container. */
+      .deck-view::before,
+      .deck-view::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 9%;
+        pointer-events: none;
+        z-index: 40;
+      }
+      .deck-view::before {
+        left: 0;
+        background: linear-gradient(90deg, #09090b 0%, rgba(9, 9, 11, 0.85) 45%, transparent 100%);
+      }
+      .deck-view::after {
+        right: 0;
+        background: linear-gradient(270deg, #09090b 0%, rgba(9, 9, 11, 0.85) 45%, transparent 100%);
+      }
+      /* In dark mode the page is pure #000, so fade to exactly that.
+         Widened to 11% to give the endless horizon more runway. */
+      html.dark .deck-view::before {
+        width: 11%;
+        background: linear-gradient(90deg, #000 0%, rgba(0, 0, 0, 0.9) 40%, transparent 100%);
+      }
+      html.dark .deck-view::after {
+        width: 11%;
+        background: linear-gradient(270deg, #000 0%, rgba(0, 0, 0, 0.9) 40%, transparent 100%);
+      }
+      /* Light: edge fades match site canvas so the shelf still dissolves into infinity. */
+      html:not(.dark) .deck-view::before {
+        width: 11%;
+        background: linear-gradient(90deg, var(--color-canvas) 0%, rgba(255, 255, 255, 0.94) 42%, transparent 100%);
+      }
+      html:not(.dark) .deck-view::after {
+        width: 11%;
+        background: linear-gradient(270deg, var(--color-canvas) 0%, rgba(255, 255, 255, 0.94) 42%, transparent 100%);
+      }
+      @media (max-width: 767px) {
+        .deck-view::before,
+        .deck-view::after { width: 6%; }
+        html.dark .deck-view::before,
+        html.dark .deck-view::after { width: 8%; }
+        html:not(.dark) .deck-view::before,
+        html:not(.dark) .deck-view::after { width: 8%; }
+      }
+      .project-stage[data-state="detail"] .deck-view {
+        opacity: 0;
+        transform: scale(0.96);
+        pointer-events: none;
+      }
+      .project-stage[data-state="deck"] .detail-view {
+        opacity: 0;
+        transform: scale(0.98);
+        pointer-events: none;
+      }
+      .project-stage[data-state="detail"] .detail-view {
+        opacity: 1;
+        transform: scale(1);
+        pointer-events: auto;
+      }
+
+      /* ---------- Deck: prompt + decorative title ---------- */
+      .deck-prompt {
+        align-self: center;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.45rem 0.9rem;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.78);
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 999px;
+        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
+        transition:
+          color 320ms cubic-bezier(0.22, 0.9, 0.24, 1),
+          background-color 320ms cubic-bezier(0.22, 0.9, 0.24, 1),
+          border-color 320ms cubic-bezier(0.22, 0.9, 0.24, 1);
+      }
+      .deck-prompt .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        background: #a5f3fc;
+        box-shadow: 0 0 10px rgba(165, 243, 252, 0.8);
+        animation: dot-pulse 2.4s ease-in-out infinite;
+      }
+      html:not(.dark) .deck-prompt .dot {
+        background: #404040;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.12);
+        animation: dot-pulse-neutral 2.4s ease-in-out infinite;
+      }
+      @keyframes dot-pulse-neutral {
+        0%,
+        100% {
+          opacity: 0.5;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.35);
+        }
+      }
+      @keyframes dot-pulse {
+        0%,
+        100% {
+          opacity: 0.45;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.35);
+        }
+      }
+      .deck-title {
+        margin: 16px auto 0;
+        text-align: center;
+        font-family: "Poppins", system-ui, sans-serif;
+        font-weight: 400;
+        font-style: italic;
+        font-size: clamp(2.2rem, 6vw, 4.25rem);
+        letter-spacing: -0.03em;
+        color: rgba(255, 255, 255, 0.14);
+        line-height: 1;
+        user-select: none;
+        transition: color 320ms cubic-bezier(0.22, 0.9, 0.24, 1);
+      }
+      html:not(.dark) .deck-title {
+        color: rgba(0, 0, 0, 0.08);
+      }
+      html:not(.dark) .deck-prompt {
+        color: rgba(0, 0, 0, 0.72);
+        background: rgba(255, 255, 255, 0.62);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        transition:
+          color 320ms cubic-bezier(0.22, 0.9, 0.24, 1),
+          background-color 320ms cubic-bezier(0.22, 0.9, 0.24, 1),
+          border-color 320ms cubic-bezier(0.22, 0.9, 0.24, 1);
+      }
+
+      /* ---------- Deck: endless library shelf ----------
+         Three copies of the project set are rendered inside the strip; a
+         scroll listener silently rewinds scrollLeft by one set-width whenever
+         it wanders near the boundary, producing a truly endless ribbon.
+         Cards stand on a 3D shelf plane; hover lifts a card, click pulls it
+         off the shelf before the detail view takes over. */
+      .deck-scroller {
+        position: relative;
+        margin: auto 0 22px;
+        width: 100%;
+        height: 380px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scroll-behavior: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        overscroll-behavior-x: contain;
+        perspective: 1800px;
+        perspective-origin: 50% 38%;
+        touch-action: pan-x;
+        cursor: grab;
+      }
+      .deck-scroller.is-dragging {
+        cursor: grabbing;
+      }
+      .deck-scroller::-webkit-scrollbar {
+        display: none;
+      }
+      @media (max-width: 767px) {
+        .deck-scroller {
+          height: 300px;
+          margin-bottom: 14px;
+        }
+      }
+      .deck-strip {
+        position: relative;
+        height: 100%;
+        width: var(--strip-w, 100%);
+        transform-style: preserve-3d;
+        isolation: isolate;
+      }
+      /* Shelf plane — a soft horizontal line of light that reads as the
+         surface the cards stand on. Sits beneath the cards in Z so books
+         cast shadow onto it when they lift. */
+      .deck-strip::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 6px;
+        height: 54px;
+        pointer-events: none;
+        z-index: 0;
+        /* No border-top (the visible hairline read as a container edge).
+           Just a gentle glow + gradient so books still feel grounded. */
+        background:
+          radial-gradient(ellipse 50% 80% at 50% 0%, rgba(255, 255, 255, 0.07), transparent 70%),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(0, 0, 0, 0.55) 60%, transparent);
+        transform: translateZ(-1px);
+      }
+      html:not(.dark) .deck-strip::after {
+        background:
+          radial-gradient(ellipse 50% 80% at 50% 0%, rgba(0, 0, 0, 0.06), transparent 72%),
+          linear-gradient(180deg, rgba(0, 0, 0, 0.03), rgba(255, 255, 255, 0.55) 52%, transparent 92%);
+      }
+      .deck-card {
+        position: absolute;
+        bottom: 34px;
+        left: var(--cx, 0px);
+        width: var(--cw, 184px);
+        height: var(--ch, 252px);
+        padding: 0;
+        background: transparent;
+        border: 0;
+        border-radius: 18px;
+        cursor: pointer;
+        z-index: 1;
+        transform-origin: 50% 100%;
+        /* NOTE: no `will-change` and no `transform-style: preserve-3d`
+           on the base rule — 72 pre-promoted GPU layers was the main
+           cause of lag. will-change is applied only on active states
+           (below), and preserve-3d isn't needed because card-face is 2D. */
+        transform:
+          translate3d(0, var(--cy, 0px), var(--cz, 0px))
+          rotateY(var(--roy, 0deg))
+          rotate(var(--rot, 0deg));
+        transition: transform 360ms cubic-bezier(0.22, 0.9, 0.24, 1),
+          filter 180ms ease, opacity 180ms ease;
+      }
+      @media (max-width: 767px) {
+        .deck-card {
+          bottom: 26px;
+        }
+      }
+      .deck-card:focus-visible {
+        outline: 2px solid #ffffff;
+        outline-offset: 6px;
+        border-radius: 22px;
+      }
+      /* Hover / keyboard preview = pulled forward, lifted, straightened.
+         will-change applied here so the compositor promotes just the
+         active card to its own layer — not all 72 at once. */
+      .deck-card:hover,
+      .deck-card.is-preview,
+      .deck-card.is-opening {
+        will-change: transform, filter;
+      }
+      .deck-card:hover,
+      .deck-card.is-preview {
+        z-index: 50 !important;
+        transform:
+          translate3d(0, calc(var(--cy, 0px) - 60px), 90px)
+          rotateY(0deg)
+          rotate(calc(var(--rot, 0deg) * 0.1))
+          scale(1.04);
+      }
+      .deck-card.is-dimmed {
+        filter: brightness(0.58) saturate(0.78);
+        opacity: 0.88;
+      }
+      /* Click → "pulled off the shelf": exaggerated pull-forward into
+         the viewer's space, then the detail state takes over. */
+      .deck-card.is-opening {
+        z-index: 60 !important;
+        transform:
+          translate3d(0, calc(var(--cy, 0px) - 120px), 220px)
+          rotateY(0deg)
+          rotate(0deg)
+          scale(1.12) !important;
+        filter: brightness(1.08) drop-shadow(0 30px 40px rgba(0, 0, 0, 0.55));
+        transition: transform 380ms cubic-bezier(0.16, 0.84, 0.3, 1),
+          filter 380ms ease;
+      }
+
+      /* ---------- Card face ---------- */
+      .card-face {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        border-radius: 20px;
+        overflow: hidden;
+        color: var(--card-ink, #ffffff);
+        background: var(--card-gradient, linear-gradient(152deg, #1f1f22, #0d0d0f));
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        font-family: "Poppins", system-ui, sans-serif;
+        font-weight: 500;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22),
+          0 28px 44px -16px rgba(0, 0, 0, 0.75),
+          0 10px 16px -6px rgba(0, 0, 0, 0.5);
+      }
+      .card-face::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        /* Straight alpha-blend gradients (no mix-blend-mode) — blending
+           each of 72 layers on every composite frame is expensive. This
+           gives a near-identical look via plain alpha compositing. */
+        background:
+          radial-gradient(120% 60% at 22% 0%, rgba(255, 255, 255, 0.16), transparent 55%),
+          radial-gradient(120% 60% at 80% 100%, rgba(0, 0, 0, 0.32), transparent 55%);
+        pointer-events: none;
+      }
+      .card-face > * {
+        position: relative;
+        z-index: 1;
+      }
+      .card-brand {
+        font-size: 0.7rem;
+        letter-spacing: 0.26em;
+        font-weight: 600;
+        opacity: 0.95;
+      }
+      .card-sub {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.58rem;
+        letter-spacing: 0.18em;
+        font-weight: 600;
+        margin-top: 6px;
+        opacity: 0.82;
+      }
+      .card-chip {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 18px;
+        flex-shrink: 0;
+        border-radius: 3px;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.08));
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+        color: rgba(0, 0, 0, 0.52);
+      }
+      .card-chip__svg {
+        width: 13px;
+        height: 13px;
+        display: block;
+        flex-shrink: 0;
+      }
+      .card-nums {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.72rem;
+        letter-spacing: 0.14em;
+        opacity: 0.92;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .card-nums .dots {
+        opacity: 0.7;
+      }
+      .card-foot {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        font-size: 0.55rem;
+        letter-spacing: 0.22em;
+        font-weight: 600;
+        opacity: 0.78;
+      }
+
+      /* ---------- Detail view ---------- */
+      .detail-view {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+        overflow-y: auto;
+        overflow-x: hidden;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+        scroll-padding-bottom: 24px;
+      }
+      @media (min-width: 900px) {
+        .detail-view {
+          grid-template-columns: 1fr 1.05fr;
+          grid-template-rows: 1fr;
+          /* Must scroll inside the stage: absolute .stage-view fills a min-height box; overflow:visible
+             let tall panels spill past the bottom with no scroll, so the CTA was clipped to one hairline. */
+          overflow-y: auto;
+        }
+      }
+      /* Full-bleed stage (dark or light): re-center detail columns on ultra-wide viewports. */
+      html.dark .detail-view,
+      html:not(.dark) .detail-view {
+        padding-left: max(20px, calc((100% - 72rem) / 2));
+        padding-right: max(20px, calc((100% - 72rem) / 2));
+      }
+      /* Breathing room below the panel so the CTA + shadow are not clipped by .project-stage overflow:hidden. */
+      .project-stage[data-state="detail"] .detail-view {
+        padding-bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+      }
+      @media (min-width: 900px) {
+        .project-stage[data-state="detail"] .detail-view {
+          padding-bottom: calc(40px + env(safe-area-inset-bottom, 0px));
+        }
+      }
+      html.dark .detail-close,
+      html:not(.dark) .detail-close {
+        right: max(14px, calc((100% - 72rem) / 2 + 14px));
+      }
+      .detail-close {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        z-index: 5;
+        width: 44px;
+        height: 44px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        color: rgba(255, 255, 255, 0.9);
+        cursor: pointer;
+        -webkit-backdrop-filter: blur(6px);
+        backdrop-filter: blur(6px);
+        transition: background 200ms ease, transform 200ms ease, border-color 200ms ease;
+      }
+      .detail-close:hover {
+        background: rgba(255, 255, 255, 0.14);
+        border-color: rgba(255, 255, 255, 0.28);
+      }
+      .detail-close:focus-visible {
+        outline: 2px solid #ffffff;
+        outline-offset: 3px;
+      }
+      .detail-hero {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 36px;
+        background: var(--hero-gradient, radial-gradient(120% 100% at 30% 30%, rgba(255, 255, 255, 0.08), #0a0a0b));
+        transition: background 620ms ease;
+        min-height: 300px;
+        overflow: hidden;
+      }
+      .detail-hero-card {
+        width: clamp(210px, 32vw, 300px);
+        aspect-ratio: 3 / 4;
+        border-radius: 22px;
+        transform: rotate(-7deg);
+        animation: hero-in 620ms cubic-bezier(0.22, 0.9, 0.24, 1) both;
+      }
+      .project-stage[data-state="detail"] .detail-hero-card {
+        animation: hero-in 620ms cubic-bezier(0.22, 0.9, 0.24, 1) both;
+      }
+      @keyframes hero-in {
+        0% {
+          opacity: 0;
+          transform: rotate(-14deg) translateY(32px) scale(0.88);
+        }
+        100% {
+          opacity: 1;
+          transform: rotate(-7deg) translateY(0) scale(1);
+        }
+      }
+      .detail-hero-card .card-face {
+        padding: 22px;
+        border-radius: 22px;
+      }
+      .detail-hero-card .card-brand {
+        font-size: 0.82rem;
+      }
+      .detail-hero-card .card-nums {
+        font-size: 0.9rem;
+      }
+      .detail-hero-card .card-foot {
+        font-size: 0.62rem;
+      }
+
+      .detail-panel {
+        position: relative;
+        padding: 44px 28px 44px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        color: rgba(255, 255, 255, 0.92);
+        animation: panel-in 520ms cubic-bezier(0.22, 0.9, 0.24, 1) both;
+      }
+      @media (min-width: 900px) {
+        .detail-panel {
+          padding: 48px 44px 52px;
+          gap: 18px;
+        }
+      }
+      @keyframes panel-in {
+        0% {
+          opacity: 0;
+          transform: translateX(12px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      .detail-meta {
+        font-size: 0.7rem;
+        letter-spacing: 0.24em;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.55);
+      }
+      .detail-title {
+        font-family: "Poppins", system-ui, sans-serif;
+        font-weight: 500;
+        font-size: clamp(1.9rem, 3.4vw, 2.65rem);
+        letter-spacing: -0.02em;
+        line-height: 1.05;
+        margin: 0;
+        color: #ffffff;
+      }
+      .detail-subtitle {
+        font-size: 0.92rem;
+        color: rgba(255, 255, 255, 0.7);
+        line-height: 1.55;
+        max-width: 44ch;
+      }
+      .detail-features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 10px;
+      }
+      .detail-feature {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 14px 8px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        text-align: center;
+      }
+      .detail-feature .f-icon {
+        width: 20px;
+        height: 20px;
+        color: rgba(255, 255, 255, 0.9);
+      }
+      .detail-feature .f-icon svg {
+        width: 100%;
+        height: 100%;
+      }
+      .detail-feature .f-title {
+        font-size: 0.66rem;
+        letter-spacing: 0.2em;
+        font-weight: 700;
+        color: #fff;
+      }
+      .detail-feature .f-sub {
+        font-size: 0.58rem;
+        letter-spacing: 0.14em;
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      .detail-gallery {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-top: 8px;
+      }
+      @media (min-width: 900px) {
+        .detail-gallery {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 14px;
+        }
+      }
+      .detail-shot {
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .detail-shot img {
+        width: 100%;
+        height: auto;
+        display: block;
+      }
+      .detail-shot button {
+        width: 100%;
+        border: 0;
+        padding: 0;
+        background: transparent;
+        display: block;
+        cursor: zoom-in;
+      }
+
+      /* Lightbox (zoom) */
+      .lightbox {
+        position: fixed;
+        inset: 0;
+        z-index: 120;
+        display: none;
+      }
+      .lightbox[data-open="true"] {
+        display: block;
+      }
+      .lightbox__scrim {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.72);
+      }
+      .lightbox__panel {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        padding: calc(14px + env(safe-area-inset-top, 0px)) 14px calc(14px + env(safe-area-inset-bottom, 0px));
+      }
+      .lightbox__bar {
+        display: flex;
+        justify-content: flex-end;
+      }
+      .lightbox__close {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: rgba(0, 0, 0, 0.25);
+        color: #ffffff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      .lightbox__body {
+        min-height: 0;
+        display: grid;
+        place-items: center;
+        overflow: auto;
+        padding: 10px 0 0;
+      }
+      .lightbox__img {
+        max-width: min(1100px, 100%);
+        max-height: 82vh;
+        width: auto;
+        height: auto;
+        border-radius: 18px;
+        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+        background: rgba(255, 255, 255, 0.04);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .lightbox__close {
+          transition: none !important;
+        }
+      }
+      .detail-split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px 24px;
+        align-items: end;
+        padding-top: 14px;
+        margin-top: 4px;
+        border-top: 1px solid rgba(255, 255, 255, 0.14);
+      }
+      @media (max-width: 420px) {
+        .detail-split {
+          grid-template-columns: 1fr;
+        }
+        .detail-split .text-right {
+          text-align: left;
+        }
+      }
+      .detail-split .label {
+        font-size: 0.62rem;
+        letter-spacing: 0.24em;
+        color: rgba(255, 255, 255, 0.5);
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+      .detail-split .value {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 1rem;
+        color: #fff;
+        font-weight: 500;
+        margin-top: 4px;
+      }
+      .detail-split .price {
+        font-family: "Poppins", system-ui, sans-serif;
+        font-size: 1.5rem;
+        font-weight: 500;
+      }
+      .detail-cta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 12px;
+        margin-bottom: 4px;
+        padding: 14px 22px;
+        background: #ffffff;
+        color: #0a0a0b;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 0.78rem;
+        letter-spacing: 0.18em;
+        line-height: 1.45;
+        text-transform: uppercase;
+        text-decoration: none;
+        transition: background 200ms ease, color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+        min-height: 48px;
+        align-self: stretch;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        box-shadow: 0 6px 18px -6px rgba(255, 255, 255, 0.2);
+        overflow: visible;
+        word-break: break-word;
+      }
+      .detail-cta [data-detail="ctaLabel"] {
+        flex: 1 1 10rem;
+        min-width: 0;
+        text-align: left;
+      }
+      .detail-cta svg {
+        flex-shrink: 0;
+        width: 1.125rem;
+        height: 1.125rem;
+      }
+      .detail-cta:hover {
+        background: #0a0a0a;
+        color: #ffffff;
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
+        transform: translateY(-1px);
+      }
+      .detail-cta:focus-visible {
+        outline: 2px solid #0a0a0a;
+        outline-offset: 3px;
+      }
+      .detail-cta:hover:focus-visible {
+        outline: 2px solid #ffffff;
+        outline-offset: 3px;
+      }
+
+      /* Contact email: animated mail icon that adapts to theme via currentColor. */
+      .mail-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration-thickness: 1px;
+      }
+      .mail-icon {
+        width: 1.1rem;
+        height: 1.1rem;
+        flex-shrink: 0;
+        color: currentColor;
+        transform: translate3d(0, 0, 0);
+        transition: transform 180ms ease, opacity 180ms ease;
+        opacity: 0.92;
+      }
+      .mail-link:hover .mail-icon,
+      .mail-link:focus-visible .mail-icon {
+        transform: translate3d(0, -1px, 0);
+        opacity: 1;
+        animation: mail-nudge 520ms cubic-bezier(0.22, 0.9, 0.24, 1) both;
+      }
+      .mail-icon path {
+        stroke-dasharray: 84;
+        stroke-dashoffset: 84;
+      }
+      .email-label {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.6rem;
+        height: 1.6rem;
+        color: var(--color-heading);
+        vertical-align: middle;
+      }
+      .email-label svg {
+        width: 1.35rem;
+        height: 1.35rem;
+      }
+      .mail-link:hover .mail-icon path,
+      .mail-link:focus-visible .mail-icon path {
+        animation: mail-draw 560ms cubic-bezier(0.22, 0.9, 0.24, 1) both;
+      }
+      @keyframes mail-nudge {
+        0% { transform: translate3d(0, 0, 0) scale(1); }
+        45% { transform: translate3d(0, -2px, 0) scale(1.02); }
+        100% { transform: translate3d(0, -1px, 0) scale(1); }
+      }
+      @keyframes mail-draw {
+        to { stroke-dashoffset: 0; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .mail-link:hover .mail-icon,
+        .mail-link:focus-visible .mail-icon {
+          animation: none !important;
+        }
+        .mail-link:hover .mail-icon path,
+        .mail-link:focus-visible .mail-icon path {
+          animation: none !important;
+          stroke-dashoffset: 0;
+        }
+      }
+
+      /* Glassmorphism accents: subtle, high-contrast, and used sparingly. */
+      .glass-soft {
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        -webkit-backdrop-filter: blur(14px) saturate(1.06);
+        backdrop-filter: blur(14px) saturate(1.06);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), 0 18px 48px rgba(0, 0, 0, 0.08);
+      }
+      html.dark .glass-soft {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(255, 255, 255, 0.16);
+        box-shadow: none;
+      }
+      /* Tiny heading tag that reads as “glass label” (works in both themes). */
+      .glass-tag {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.35rem 0.75rem;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: var(--color-heading);
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        -webkit-backdrop-filter: blur(10px) saturate(1.05);
+        backdrop-filter: blur(10px) saturate(1.05);
+      }
+      html.dark .glass-tag {
+        color: var(--color-heading);
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.18);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .glass-soft,
+        .glass-tag {
+          -webkit-backdrop-filter: none !important;
+          backdrop-filter: none !important;
+        }
+      }
+
+      /* Mobile menu (hamburger) */
+      body.menu-open {
+        overflow: hidden;
+        touch-action: none;
+      }
+      .mobile-menu-scrim {
+        position: fixed;
+        inset: 0;
+        z-index: 70;
+        background: rgba(0, 0, 0, 0.38);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 180ms ease;
+      }
+      html:not(.dark) .mobile-menu-scrim {
+        background: rgba(0, 0, 0, 0.22);
+      }
+      .mobile-menu-scrim[data-open="true"] {
+        opacity: 1;
+        pointer-events: auto;
+      }
+      .mobile-menu-panel {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100vh;
+        width: min(22rem, calc(100vw - 3.25rem));
+        padding: calc(18px + env(safe-area-inset-top, 0px)) 16px calc(18px + env(safe-area-inset-bottom, 0px));
+        background: #ffffff;
+        border-left: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 18px 60px rgba(0, 0, 0, 0.22);
+        transform: translate3d(105%, 0, 0);
+        opacity: 0;
+        pointer-events: none;
+        transition: transform 320ms cubic-bezier(0.22, 0.9, 0.24, 1), opacity 240ms ease;
+        z-index: 80;
+        overflow: auto;
+      }
+      html.dark .mobile-menu-panel {
+        background: #000000;
+        border-left-color: rgba(255, 255, 255, 0.16);
+        box-shadow: 0 18px 60px rgba(0, 0, 0, 0.55);
+      }
+      .mobile-menu-panel[data-open="true"] {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translate3d(0, 0, 0);
+      }
+      .mobile-menu-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 8px 14px;
+      }
+      .mobile-menu-title {
+        font-family: Poppins, system-ui, sans-serif;
+        font-size: 1.1rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        color: var(--color-heading);
+      }
+      .mobile-menu-close {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        color: var(--color-heading);
+        cursor: pointer;
+        transition: transform 160ms ease, background-color 160ms ease, border-color 160ms ease;
+      }
+      html:not(.dark) .mobile-menu-close {
+        background: rgba(0, 0, 0, 0.04);
+        border-color: rgba(0, 0, 0, 0.12);
+      }
+      .mobile-menu-close:hover {
+        transform: translate3d(0, -1px, 0);
+        background: rgba(255, 255, 255, 0.14);
+        border-color: rgba(255, 255, 255, 0.28);
+      }
+      html:not(.dark) .mobile-menu-close:hover {
+        background: rgba(0, 0, 0, 0.06);
+        border-color: rgba(0, 0, 0, 0.16);
+      }
+      .mobile-menu-divider {
+        height: 1px;
+        margin: 6px 8px 14px;
+        background: rgba(255, 255, 255, 0.12);
+      }
+      html:not(.dark) .mobile-menu-divider {
+        background: rgba(0, 0, 0, 0.1);
+      }
+      .mobile-menu-body {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding: 0 4px;
+      }
+      .mobile-menu-actions {
+        margin-top: auto;
+        padding: 18px 4px 4px;
+      }
+      .mobile-menu-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        width: 100%;
+        min-height: 48px;
+        padding: 0.75rem 0.85rem;
+        border-radius: 1rem;
+        color: var(--color-heading);
+        font-weight: 700;
+        font-size: 1.05rem;
+        letter-spacing: -0.015em;
+        text-decoration: none;
+        transition: background-color 160ms ease, transform 160ms ease;
+      }
+      .mobile-menu-link:hover {
+        background: rgba(255, 255, 255, 0.12);
+        transform: translate3d(0, -1px, 0);
+      }
+      html:not(.dark) .mobile-menu-link:hover {
+        background: rgba(0, 0, 0, 0.05);
+      }
+      .mobile-menu-link .hint {
+        font-weight: 700;
+        color: var(--color-muted);
+        font-size: 0.85rem;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .mobile-menu-scrim,
+        .mobile-menu-panel,
+        .mobile-menu-link {
+          transition: none !important;
+        }
+        .mobile-menu-link:hover {
+          transform: none !important;
+        }
+        .mobile-menu-close:hover {
+          transform: none !important;
+        }
+      }
+      /* Dark: slightly clearer chips + split (readability on charcoal panel). */
+      html.dark .detail-feature {
+        background: rgba(255, 255, 255, 0.055);
+        border-color: rgba(255, 255, 255, 0.14);
+      }
+      html.dark .detail-shot {
+        border-color: rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.05);
+      }
+      /* Light: project detail column = same monochrome language as the rest of the light UI. */
+      html:not(.dark) .detail-panel {
+        background: linear-gradient(185deg, #ffffff 0%, #fafafa 45%, #f4f4f4 100%);
+        color: #0a0a0a;
+      }
+      html:not(.dark) .detail-panel .detail-meta {
+        color: rgba(0, 0, 0, 0.48);
+      }
+      html:not(.dark) .detail-title {
+        color: #000000;
+      }
+      html:not(.dark) .detail-subtitle {
+        color: rgba(0, 0, 0, 0.62);
+      }
+      html:not(.dark) .detail-feature {
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      }
+      html:not(.dark) .detail-feature .f-icon {
+        color: #0a0a0a;
+      }
+      html:not(.dark) .detail-feature .f-title {
+        color: #0a0a0a;
+      }
+      html:not(.dark) .detail-feature .f-sub {
+        color: rgba(0, 0, 0, 0.48);
+      }
+      html:not(.dark) .detail-shot {
+        border: 1px solid rgba(0, 0, 0, 0.14);
+        background: rgba(0, 0, 0, 0.035);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+      }
+      html:not(.dark) .detail-split {
+        border-top-color: rgba(0, 0, 0, 0.12);
+      }
+      html:not(.dark) .detail-split .label {
+        color: rgba(0, 0, 0, 0.48);
+      }
+      html:not(.dark) .detail-split .value,
+      html:not(.dark) .detail-split .price {
+        color: #0a0a0a;
+      }
+      html:not(.dark) .detail-close {
+        background: rgba(10, 10, 10, 0.88);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+      }
+      html:not(.dark) .detail-close:hover {
+        background: #000000;
+        border-color: rgba(255, 255, 255, 0.28);
+      }
+      html:not(.dark) .detail-close:focus-visible {
+        outline: 2px solid #ffffff;
+        outline-offset: 3px;
+      }
+      html:not(.dark) .detail-cta {
+        border: 1px solid rgba(0, 0, 0, 0.12);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+      }
+
+      /* Formspree status line (visible + aria-live). */
+      #form-status {
+        margin-top: 0.75rem;
+        font-size: 0.95rem;
+        line-height: 1.4;
+        font-weight: 600;
+        color: var(--color-muted);
+        min-height: 1.4em;
+      }
+      #form-status[data-tone="success"] { color: var(--color-heading); }
+      #form-status[data-tone="error"] { color: #dc2626; }
+      html.dark #form-status[data-tone="error"] { color: #fca5a5; }
+      #form-status[data-visible="false"] {
+        opacity: 0;
+        transform: translate3d(0, 6px, 0);
+      }
+      #form-status[data-visible="true"] {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+        transition: opacity 220ms ease, transform 260ms cubic-bezier(0.22, 0.9, 0.24, 1);
+      }
+      @media (prefers-reduced-motion: reduce) {
+        #form-status[data-visible="true"] {
+          transition: none !important;
+        }
+      }
+      .submit-spinner {
+        display: none;
+        width: 1.15rem;
+        height: 1.15rem;
+        border-radius: 999px;
+        border: 2px solid currentColor;
+        border-right-color: transparent;
+        animation: spin 0.75s linear infinite;
+      }
+      .btn-is-loading .submit-spinner { display: inline-block; }
+      .btn-is-loading .submit-label { display: none; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      @media (prefers-reduced-motion: reduce) {
+        .submit-spinner { animation: none !important; }
+      }
+
+      /* ---------- Reduced motion ---------- */
+      @media (prefers-reduced-motion: reduce) {
+        .stage-view,
+        .deck-card,
+        .detail-hero-card,
+        .detail-panel,
+        .detail-cta,
+        .detail-close,
+        .deck-prompt .dot {
+          transition: none !important;
+          animation: none !important;
+        }
+        .deck-scroller {
+          scroll-behavior: auto !important;
+        }
+        .deck-card {
+          transform: translate3d(0, 0, 0) !important;
+        }
+        .deck-card:hover,
+        .deck-card.is-preview {
+          transform: translate3d(0, -14px, 0) scale(1.02) !important;
+        }
+        .deck-card.is-opening {
+          transform: translate3d(0, -20px, 0) scale(1.04) !important;
+        }
+      }
+      .skip-link {
+        position: absolute;
+        left: 1rem;
+        top: -100%;
+        z-index: 100;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        background: var(--color-action);
+        color: var(--color-on-action);
+        font-weight: 600;
+        transition: top 0.2s ease;
+      }
+      .skip-link:focus {
+        top: 1rem;
+        outline: 2px solid var(--color-heading);
+        outline-offset: 2px;
+      }
+    </style>
+  </head>
+  <body class="relative min-h-screen bg-canvas font-sans text-ink antialiased transition-[background-color,color] duration-300">
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <noscript>
+      <style>
+        .scroll-reveal,
+        .scroll-reveal.is-revealed {
+          opacity: 1 !important;
+          transform: none !important;
+        }
+      </style>
+    </noscript>
+
+    <header class="pointer-events-none fixed left-4 right-4 top-4 z-50 md:left-6 md:right-6">
+      <div
+        class="pointer-events-auto relative mx-auto flex max-w-content items-center justify-between gap-3 rounded-2xl px-4 py-3 md:gap-4 md:px-6 glass"
+      >
+        <a
+          href="#top"
+          class="nav-lift group flex min-w-0 shrink-0 cursor-pointer items-center focus:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
+          id="top"
+          aria-label="CodeTronik"
+        >
+          <img
+            class="site-logo dark:hidden"
+            src="assets/brand/full-logo.svg"
+            alt=""
+            width="2000"
+            height="550"
+            decoding="async"
+          />
+          <img
+            class="site-logo hidden dark:block"
+            src="assets/brand/full-logo-dark.svg"
+            alt=""
+            width="2000"
+            height="550"
+            decoding="async"
+          />
+        </a>
+        <nav class="hidden items-center gap-8 text-sm font-bold text-muted md:flex" aria-label="Primary">
+          <a
+            class="nav-lift cursor-pointer hover:text-heading focus:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+            href="#services"
+            >Services</a
+          >
+          <a
+            class="nav-lift cursor-pointer hover:text-heading focus:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+            href="#process"
+            >How we work</a
+          >
+          <a
+            class="nav-lift cursor-pointer hover:text-heading focus:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+            href="#work"
+            >Our Projects</a
+          >
+          <a
+            class="nav-lift cursor-pointer hover:text-heading focus:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+            href="#contact"
+            >Contact</a
+          >
+        </nav>
+        <div class="flex shrink-0 items-center gap-2 md:gap-3">
+          <button
+            type="button"
+            id="mobile-menu-btn"
+            class="nav-lift-ctrl inline-flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-full text-heading glass-chip focus:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-canvas md:hidden"
+            aria-label="Open menu"
+            aria-expanded="false"
+            aria-controls="mobile-menu-panel"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true">
+              <path d="M5 7h14M5 12h14M5 17h14" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            id="theme-toggle"
+            class="nav-lift-ctrl inline-flex size-11 shrink-0 cursor-pointer items-center justify-center rounded-full text-heading glass-chip focus:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-canvas"
+            aria-label="Switch color theme"
+            aria-pressed="false"
+          >
+            <svg
+              class="pointer-events-none hidden h-5 w-5 shrink-0 dark:block"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path
+                d="M12 3v2.25m6.364.386-1.591 1.591M21 12h-2.25m-.386 6.364-1.591-1.591M12 18.75V21m-4.773-4.227-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z"
+              />
+            </svg>
+            <svg
+              class="pointer-events-none block h-5 w-5 shrink-0 dark:hidden"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path
+                d="M21.752 15.002A9.718 9.718 0 0 1 18 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 0 0 3 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 0 0 9.002-5.998Z"
+              />
+            </svg>
+          </button>
+          <a
+            href="#contact"
+            class="nav-lift-ctrl btn-primary hidden min-h-11 min-w-[44px] cursor-pointer items-center justify-center rounded-full bg-action px-4 py-2 text-sm font-bold text-onaction hover:bg-action-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-canvas sm:inline-flex md:px-5"
+            >Book a call</a
+          >
+        </div>
+
+        <div id="mobile-menu-scrim" class="mobile-menu-scrim md:hidden" data-open="false" aria-hidden="true"></div>
+        <aside id="mobile-menu-panel" class="mobile-menu-panel md:hidden" data-open="false" aria-label="Site menu">
+          <div class="mobile-menu-head">
+            <div class="mobile-menu-title">Menu</div>
+            <button type="button" id="mobile-menu-close" class="mobile-menu-close" aria-label="Close menu">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" width="18" height="18" aria-hidden="true">
+                <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round" />
+              </svg>
+            </button>
+          </div>
+          <div class="mobile-menu-divider" aria-hidden="true"></div>
+          <nav class="mobile-menu-body" aria-label="Mobile">
+            <a class="mobile-menu-link" href="#services"><span>Services</span><span class="hint">01</span></a>
+            <a class="mobile-menu-link" href="#process"><span>How we work</span><span class="hint">02</span></a>
+            <a class="mobile-menu-link" href="#work"><span>Our Projects</span><span class="hint">03</span></a>
+            <a class="mobile-menu-link" href="#contact"><span>Contact</span><span class="hint">04</span></a>
+          </nav>
+          <div class="mobile-menu-actions">
+            <a class="mobile-menu-link btn-primary justify-center" href="#contact"><span>Book a call</span></a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main id="main" class="relative z-10 min-h-0">
+      <section class="hero-section relative overflow-hidden border-b border-line bg-transparent pt-24 sm:pt-28 md:pt-36" aria-labelledby="hero-heading">
+        <div class="mesh-bg" aria-hidden="true"></div>
+        <div class="relative z-10 mx-auto grid max-w-content gap-10 px-4 pb-16 pt-8 md:grid-cols-12 md:gap-10 md:px-6 lg:pb-28 lg:pt-14">
+          <div class="relative md:col-span-7">
+            <div class="hero-text-ambient" aria-hidden="true">
+              <div class="hero-text-ambient__blob hero-text-ambient__blob--a"></div>
+              <div class="hero-text-ambient__blob hero-text-ambient__blob--b"></div>
+              <div class="hero-text-ambient__blob hero-text-ambient__blob--c"></div>
+              <div class="hero-text-ambient__mesh" aria-hidden="true"></div>
+            </div>
+            <div class="hero-text-stack">
+              <p class="scroll-reveal text-sm font-semibold uppercase tracking-[0.2em] text-action">Software house</p>
+              <h1 id="hero-heading" class="scroll-reveal scroll-reveal--delay-1 mt-4 text-4xl font-semibold leading-tight tracking-tight text-heading md:text-5xl lg:text-6xl">
+                Ship the web, your store, your product, and the AI layer that actually earns its keep.
+              </h1>
+              <p class="scroll-reveal scroll-reveal--delay-2 mt-6 max-w-xl text-lg leading-relaxed text-muted">
+                From bespoke marketing sites to Shopify, custom applications, and grounded AI integrations, we design and build systems your team can run, not demos that gather dust.
+              </p>
+              <div class="scroll-reveal scroll-reveal--delay-3 mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <a
+                  href="#contact"
+                  class="btn-primary inline-flex min-h-11 min-w-[44px] cursor-pointer items-center justify-center rounded-full bg-action px-6 py-3 text-base font-semibold text-onaction transition-colors duration-200 hover:bg-action-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+                  >Plan a project</a
+                >
+                <a
+                  href="#services"
+                  class="btn-surface-invert inline-flex min-h-11 min-w-[44px] cursor-pointer items-center justify-center rounded-full px-6 py-3 text-base font-semibold text-heading transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-surface glass"
+                  >Explore services</a
+                >
+              </div>
+              <dl class="scroll-reveal scroll-reveal--delay-4 mt-14 grid max-w-lg grid-cols-3 gap-6 border-t border-line pt-8 text-sm">
+                <div>
+                  <dt class="font-medium text-muted">Delivery</dt>
+                  <dd class="mt-1 text-2xl font-semibold tracking-tight text-heading">2-10 week</dd>
+                  <dd class="text-muted">typical first release</dd>
+                </div>
+                <div>
+                  <dt class="font-medium text-muted">Stack</dt>
+                  <dd class="mt-1 text-2xl font-semibold tracking-tight text-heading">Modern</dd>
+                  <dd class="text-muted">web &amp; cloud native</dd>
+                </div>
+                <div>
+                  <dt class="font-medium text-muted">AI</dt>
+                  <dd class="mt-1 text-2xl font-semibold tracking-tight text-heading">Practical</dd>
+                  <dd class="text-muted">measured ROI</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+          <div class="relative flex h-full min-h-0 flex-col md:col-span-5">
+            <div class="absolute -right-6 top-0 hidden h-32 w-32 rounded-full border-4 border-action/20 md:block"></div>
+            <div class="relative shrink-0 rounded-3xl p-6 md:p-8 glass">
+              <div class="flex items-center justify-between gap-4 border-b border-line pb-4">
+                <span class="text-xs font-semibold uppercase tracking-wider text-muted">Engagement snapshot</span>
+                <span class="rounded-full px-3 py-1 text-xs font-semibold text-action glass-chip">Fixed scope option</span>
+              </div>
+              <ul class="mt-6 space-y-5 text-sm text-muted">
+                <li class="flex gap-3">
+                  <span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-action glass-chip" aria-hidden="true">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </span>
+                  <span><strong class="font-semibold text-heading">Discovery workshop</strong>. Goals, constraints, and success metrics captured in one working session.</span>
+                </li>
+                <li class="flex gap-3">
+                  <span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-action glass-chip" aria-hidden="true">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </span>
+                  <span><strong class="font-semibold text-heading">Architecture note</strong>. Plain-language diagram of pages, data, integrations, and ownership.</span>
+                </li>
+                <li class="flex gap-3">
+                  <span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-action glass-chip" aria-hidden="true">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </span>
+                  <span><strong class="font-semibold text-heading">Launch + handoff</strong>. Analytics, training, and a sensible support window.</span>
+                </li>
+              </ul>
+            </div>
+            <div
+              class="hero-doodle-wrap relative mt-8 flex min-h-0 flex-1 flex-col items-stretch justify-end gap-0 pr-0 md:mt-10 md:items-end md:pr-1"
+              aria-hidden="true"
+            >
+              <img
+                class="hero-engagement-img scroll-reveal ml-auto md:ml-0"
+                src="assets/illustrations/hero-engagement.png"
+                alt=""
+                width="400"
+                height="269"
+                loading="lazy"
+                decoding="async"
+                fetchpriority="low"
+                sizes="(max-width: 767px) 90vw, (max-width: 1023px) 36vw, 400px"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="services" class="border-b border-line bg-canvas py-20 md:py-24" aria-labelledby="services-heading">
+        <div class="mx-auto max-w-content px-4 md:px-6">
+          <div class="max-w-2xl">
+            <h2 id="services-heading" class="scroll-reveal text-3xl font-semibold tracking-tight text-heading md:text-4xl">What we build with you</h2>
+            <p class="scroll-reveal scroll-reveal--delay-1 mt-4 text-lg text-muted">
+              Four focused practices. One accountable team. Each engagement starts with measurable outcomes, not a laundry list of buzzwords.
+            </p>
+          </div>
+
+          <div class="scroll-reveal scroll-reveal--delay-2 mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-12 lg:gap-8">
+            <article class="flex flex-col rounded-3xl p-8 lg:col-span-5 glass">
+              <div class="flex h-12 w-12 items-center justify-center rounded-2xl text-action glass-chip" aria-hidden="true">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 5h16v14H4zM8 19h8" />
+                  <path stroke-linecap="round" d="M8 9h8M8 12h5" />
+                </svg>
+              </div>
+              <h3 class="mt-6 text-xl font-semibold text-heading">Custom web experiences</h3>
+              <p class="mt-3 flex-1 text-muted">
+                Marketing sites, product microsites, and content-led experiences with performance budgets, accessible components, and CMS workflows your marketing team can own.
+              </p>
+              <ul class="mt-6 space-y-2 text-sm text-muted">
+                <li class="flex gap-2"><span class="text-action" aria-hidden="true">•</span> Design systems &amp; component libraries</li>
+                <li class="flex gap-2"><span class="text-action" aria-hidden="true">•</span> SEO, analytics, and experiment hooks</li>
+              </ul>
+            </article>
+
+            <article class="flex flex-col rounded-3xl p-8 lg:col-span-7 glass">
+              <div class="flex flex-col gap-8 lg:flex-row lg:items-start">
+                <div class="flex-1">
+                  <div class="flex h-12 w-12 items-center justify-center rounded-2xl text-action glass-chip" aria-hidden="true">
+                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16v10H4zM8 21h8M9 11h2v4H9z" />
+                    </svg>
+                  </div>
+                  <h3 class="mt-6 text-xl font-semibold text-heading">Shopify &amp; commerce</h3>
+                  <p class="mt-3 text-muted">
+                    Theme builds, headless storefronts when it makes sense, subscription flows, and integrations to ERP, CRM, and fulfillment, implemented so operations stay calm during campaigns.
+                  </p>
+                </div>
+                <div class="lg:w-52 lg:shrink-0">
+                  <p class="text-xs font-semibold uppercase tracking-wider text-muted">Typical outputs</p>
+                  <ul class="mt-3 space-y-2 text-sm text-muted">
+                    <li>Custom sections &amp; metafields</li>
+                    <li>Checkout extensibility</li>
+                    <li>International pricing</li>
+                  </ul>
+                </div>
+              </div>
+            </article>
+
+            <article class="flex flex-col rounded-3xl p-8 lg:col-span-7 glass">
+              <div class="flex h-12 w-12 items-center justify-center rounded-2xl text-action glass-chip" aria-hidden="true">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 9l4-4 4 4M8 15l4 4 4-4M12 5v14" />
+                </svg>
+              </div>
+              <h3 class="mt-6 text-xl font-semibold text-heading">Custom application development</h3>
+              <p class="mt-3 text-muted">
+                Internal tools, customer portals, and line-of-business products with clear domain models, automated tests where they matter, and deployment pipelines you can trust on a Tuesday night.
+              </p>
+              <div class="mt-6 grid gap-4 sm:grid-cols-3">
+                <div class="rounded-2xl px-4 py-3 glass-chip">
+                  <p class="text-xs font-semibold uppercase tracking-wide text-muted">Web</p>
+                  <p class="mt-1 text-sm font-semibold text-heading">SPA &amp; SSR</p>
+                </div>
+                <div class="rounded-2xl px-4 py-3 glass-chip">
+                  <p class="text-xs font-semibold uppercase tracking-wide text-muted">Mobile</p>
+                  <p class="mt-1 text-sm font-semibold text-heading">Cross-platform</p>
+                </div>
+                <div class="rounded-2xl px-4 py-3 glass-chip">
+                  <p class="text-xs font-semibold uppercase tracking-wide text-muted">APIs</p>
+                  <p class="mt-1 text-sm font-semibold text-heading">REST &amp; events</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="flex flex-col rounded-3xl p-8 lg:col-span-5 glass">
+              <div class="flex h-12 w-12 items-center justify-center rounded-2xl text-action glass-chip" aria-hidden="true">
+                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 class="mt-6 text-xl font-semibold text-heading">AI integration &amp; tools</h3>
+              <p class="mt-3 flex-1 text-muted">
+                Retrieval-augmented assistants, workflow copilots, document pipelines, and evaluation harnesses, scoped to real tasks, grounded in your data policies, and monitored once they go live.
+              </p>
+              <p class="mt-4 text-sm font-medium text-heading">
+                We ship guardrails first: access control, logging, human review paths, and rollback plans, not slide-deck fiction.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="process" class="border-b border-line bg-surface py-20 md:py-24" aria-labelledby="process-heading">
+        <div class="mx-auto max-w-content px-4 md:px-6">
+          <div class="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
+            <div class="max-w-xl">
+              <h2 id="process-heading" class="scroll-reveal text-3xl font-semibold tracking-tight text-heading md:text-4xl">How we work</h2>
+              <p class="scroll-reveal scroll-reveal--delay-1 mt-4 text-lg text-muted">
+                A straightforward rhythm: align tightly, build in thin slices, validate with real users or stakeholders, then harden for production.
+              </p>
+            </div>
+            <p class="scroll-reveal scroll-reveal--delay-2 max-w-sm text-sm text-muted">
+              Every phase ends with something you can click, measure, or reject. No mystery milestones.
+            </p>
+          </div>
+
+          <ol class="scroll-reveal scroll-reveal--delay-3 mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <li class="rounded-3xl border border-dashed border-line-strong p-6 glass">
+              <span class="text-xs font-bold uppercase tracking-wider text-action">01</span>
+              <h3 class="mt-3 text-lg font-semibold text-heading">Design</h3>
+              <p class="mt-2 text-sm text-muted">Outcomes, audiences, constraints, and risks captured in a shared brief and lightweight solution sketch.</p>
+            </li>
+            <li class="rounded-3xl p-6 glass">
+              <span class="text-xs font-bold uppercase tracking-wider text-action">02</span>
+              <h3 class="mt-3 text-lg font-semibold text-heading">Code</h3>
+              <p class="mt-2 text-sm text-muted">Vertical slices with weekly demos; design and engineering in the same thread to avoid handoff drift.</p>
+            </li>
+            <li class="rounded-3xl p-6 glass">
+              <span class="text-xs font-bold uppercase tracking-wider text-action">03</span>
+              <h3 class="mt-3 text-lg font-semibold text-heading">Test</h3>
+              <p class="mt-2 text-sm text-muted">Analytics, usability checks, and load tests tied back to the metrics we agreed on day one.</p>
+            </li>
+            <li class="rounded-3xl p-6 glass">
+              <span class="text-xs font-bold uppercase tracking-wider text-action">04</span>
+              <h3 class="mt-3 text-lg font-semibold text-heading">Deployment</h3>
+              <p class="mt-2 text-sm text-muted">Playbooks, on-call expectations, and a calm handoff so your team owns the roadmap after launch.</p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section id="work" class="overflow-x-clip border-b border-line bg-canvas py-20 md:py-24" aria-labelledby="work-heading">
+        <div class="mx-auto max-w-content px-4 md:px-6">
+          <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div class="max-w-2xl">
+              <h2 id="work-heading" class="scroll-reveal text-3xl font-semibold tracking-tight text-heading md:text-4xl">Our Projects</h2>
+              <p class="scroll-reveal scroll-reveal--delay-1 mt-4 text-lg text-muted">
+                A snapshot of what we ship. Hover to preview, then click to open the build details.
+              </p>
+            </div>
+            <p class="scroll-reveal scroll-reveal--delay-2 max-w-sm text-sm text-muted md:text-right">
+              Need something similar in your industry? We’ll share sector-matched references during intake.
+            </p>
+          </div>
+
+          <div id="project-stage" class="scroll-reveal scroll-reveal--delay-3 project-stage mt-12" data-state="deck" aria-label="Project showcase">
+            <div class="stage-view deck-view">
+              <span class="deck-prompt" role="note">
+                <span class="dot" aria-hidden="true"></span>
+                <span data-deck-prompt>Hover a card, click or press Enter to open</span>
+              </span>
+              <div class="deck-title" aria-hidden="true">Made to ship.</div>
+              <div
+                class="deck-scroller"
+                id="deck-scroller"
+                role="group"
+                aria-roledescription="Library shelf of projects"
+                aria-label="Scroll to browse projects"
+                tabindex="0"
+              >
+                <div
+                  id="projects-deck"
+                  class="deck-strip"
+                  aria-label="Projects"
+                ></div>
+              </div>
+            </div>
+
+            <div
+              id="project-detail-panel"
+              class="stage-view detail-view"
+              role="region"
+              aria-labelledby="project-detail-title"
+              aria-live="polite"
+              aria-hidden="true"
+            >
+              <button
+                type="button"
+                id="project-detail-close"
+                class="detail-close"
+                aria-label="Close project details"
+                aria-controls="project-stage"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" width="16" height="16" aria-hidden="true">
+                  <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round" />
+                </svg>
+              </button>
+              <div class="detail-hero">
+                <div class="detail-hero-card" aria-hidden="true"></div>
+              </div>
+              <div class="detail-panel">
+                <p class="detail-meta" data-detail="meta">…</p>
+                <h3 class="detail-title" id="project-detail-title" data-detail="title">Project title</h3>
+                <p class="detail-subtitle" data-detail="subtitle">Subtitle</p>
+                <div class="detail-features" data-detail="features" role="list"></div>
+                <div class="detail-gallery" data-detail="gallery" aria-label="Project screenshots"></div>
+                <div class="detail-split">
+                  <div>
+                    <p class="label">Case</p>
+                    <p class="value" data-detail="edition">…</p>
+                  </div>
+                  <div class="text-right">
+                    <p class="label">Engagement</p>
+                    <p class="value price" data-detail="price">…</p>
+                  </div>
+                </div>
+                <a class="detail-cta" href="#contact" data-detail="cta">
+                  <span data-detail="ctaLabel">Discuss a similar build</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" aria-hidden="true">
+                    <path d="M5 12h14M13 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" class="bg-surface py-20 md:py-24" aria-labelledby="contact-heading">
+        <div class="mx-auto max-w-content px-4 md:px-6">
+          <div class="grid gap-12 lg:grid-cols-2 lg:gap-16">
+            <div class="rounded-3xl px-6 pb-6 pt-5 md:px-8 md:pb-8 md:pt-6 glass-soft">
+              <span class="glass-tag">Contact</span>
+              <h2 id="contact-heading" class="scroll-reveal mt-3 text-3xl font-semibold tracking-tight text-heading md:text-4xl">Tell us what “done” looks like</h2>
+              <p class="scroll-reveal scroll-reveal--delay-1 mt-6 text-lg text-muted">
+                Share a short brief. We reply within two business days with questions, a suggested approach, and transparent ballpark ranges before any contract paperwork.
+              </p>
+              <div class="scroll-reveal scroll-reveal--delay-2 mt-10 space-y-4 text-sm text-muted">
+                <p>
+                  <span class="email-label" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M4 6h16v12H4z" />
+                      <path d="m4 7 8 6 8-6" />
+                    </svg>
+                  </span>
+                  <span class="sr-only">Email</span><br />
+                  <a
+                    class="mail-link cursor-pointer text-action underline-offset-2 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
+                    href="mailto:hello@codetronik.co"
+                    aria-label="Email CodeTronik at hello@codetronik.co"
+                  >
+                    <svg class="mail-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M4 6h16v12H4z" />
+                      <path d="m4 7 8 6 8-6" />
+                    </svg>
+                    <span>hello@codetronik.co</span>
+                  </a>
+                </p>
+              </div>
+            </div>
+
+            <form
+              id="contact-form"
+              class="rounded-3xl p-6 md:p-8 glass"
+              action="https://formspree.io/f/maqvbnva"
+              method="post"
+              novalidate
+            >
+              <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+              <input type="hidden" name="_subject" value="New inquiry from codetronik.co" />
+              <input type="hidden" id="form-next" name="_next" value="" />
+              <div class="grid gap-5">
+                <div>
+                  <label for="name" class="block text-sm font-semibold text-heading">Full name</label>
+                  <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    autocomplete="name"
+                    required
+                    class="mt-2 w-full min-h-11 rounded-xl border border-line-strong bg-white/65 px-4 py-3 text-base text-ink outline-none transition-colors duration-200 placeholder:text-muted focus:border-action focus:ring-2 focus:ring-action/30 dark:bg-transparent"
+                  />
+                </div>
+                <div>
+                  <label for="email" class="block text-sm font-semibold text-heading">Work email</label>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autocomplete="email"
+                    required
+                    class="mt-2 w-full min-h-11 rounded-xl border border-line-strong bg-white/65 px-4 py-3 text-base text-ink outline-none transition-colors duration-200 placeholder:text-muted focus:border-action focus:ring-2 focus:ring-action/30 dark:bg-transparent"
+                  />
+                </div>
+                <div>
+                  <label for="company" class="block text-sm font-semibold text-heading">Company</label>
+                  <input
+                    id="company"
+                    name="company"
+                    type="text"
+                    autocomplete="organization"
+                    class="mt-2 w-full min-h-11 rounded-xl border border-line-strong bg-white/65 px-4 py-3 text-base text-ink outline-none transition-colors duration-200 placeholder:text-muted focus:border-action focus:ring-2 focus:ring-action/30 dark:bg-transparent"
+                  />
+                </div>
+                <div>
+                  <label for="service" class="block text-sm font-semibold text-heading">Primary interest</label>
+                  <select
+                    id="service"
+                    name="service"
+                    class="mt-2 w-full min-h-11 cursor-pointer rounded-xl border border-line-strong bg-white/65 px-4 py-3 text-base text-ink outline-none transition-colors duration-200 focus:border-action focus:ring-2 focus:ring-action/30 dark:bg-transparent"
+                  >
+                    <option>Custom web</option>
+                    <option>Shopify / commerce</option>
+                    <option>Custom application</option>
+                    <option>AI integration or tools</option>
+                    <option>Not sure yet</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="message" class="block text-sm font-semibold text-heading">Project notes</label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    rows="4"
+                    class="mt-2 w-full rounded-xl border border-line-strong bg-white/65 px-4 py-3 text-base text-ink outline-none transition-colors duration-200 placeholder:text-muted focus:border-action focus:ring-2 focus:ring-action/30 dark:bg-transparent"
+                    placeholder="Goals, timelines, links, constraints, anything useful."
+                  ></textarea>
+                </div>
+                <button
+                  type="submit"
+                  class="btn-primary inline-flex min-h-11 w-full cursor-pointer items-center justify-center rounded-full bg-action px-6 py-3 text-base font-semibold text-onaction transition-colors duration-200 hover:bg-action-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-elevated sm:w-auto"
+                >
+                  <span class="submit-label">Send message</span>
+                  <span class="submit-spinner" aria-hidden="true"></span>
+                </button>
+                <p id="form-status" role="status" aria-live="polite" data-tone="" data-visible="false"></p>
+                <p class="text-xs text-muted">
+                  We’ll only use this to reply to your request.
+                </p>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="relative z-10 border-t border-line bg-canvas py-12">
+      <div class="mx-auto flex max-w-content flex-col gap-8 px-4 text-sm text-muted md:flex-row md:items-center md:justify-between md:px-6">
+        <p class="scroll-reveal font-semibold text-heading">© <span id="year"></span> CodeTronik. All rights reserved.</p>
+        <nav class="flex flex-wrap gap-6" aria-label="Footer">
+          <a class="cursor-pointer transition-colors duration-200 hover:text-heading focus:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-canvas" href="#services">Services</a>
+          <a class="cursor-pointer transition-colors duration-200 hover:text-heading focus:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-canvas" href="#contact">Contact</a>
+          <a class="cursor-pointer transition-colors duration-200 hover:text-heading focus:outline-none focus-visible:ring-2 focus-visible:ring-action focus-visible:ring-offset-2 focus-visible:ring-offset-canvas" href="#">Privacy</a>
+        </nav>
+      </div>
+    </footer>
+
+    <div id="lightbox" class="lightbox" data-open="false" role="dialog" aria-modal="true" aria-label="Image viewer">
+      <div id="lightbox-scrim" class="lightbox__scrim" aria-hidden="true"></div>
+      <div class="lightbox__panel">
+        <div class="lightbox__bar">
+          <button type="button" id="lightbox-close" class="lightbox__close" aria-label="Close image">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" width="18" height="18" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round" />
+            </svg>
+          </button>
+        </div>
+        <div class="lightbox__body">
+          <img id="lightbox-img" class="lightbox__img" src="" alt="" />
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+
+      (function () {
+        var KEY = "codetronik-color-scheme";
+        function stored() {
+          try {
+            return localStorage.getItem(KEY);
+          } catch (e) {
+            return null;
+          }
+        }
+        function prefersDark() {
+          return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        }
+        function isDarkFromPreference() {
+          var v = stored();
+          if (v === "light") return false;
+          if (v === "dark") return true;
+          return prefersDark();
+        }
+        function syncChromeMeta() {
+          var m = document.getElementById("theme-color-meta");
+          if (!m) return;
+          m.setAttribute("content", document.documentElement.classList.contains("dark") ? "#000000" : "#ffffff");
+        }
+        function syncFavicon() {
+          var dark = document.documentElement.classList.contains("dark");
+          var svg = document.getElementById("site-favicon");
+          var i16 = document.getElementById("site-favicon-16");
+          var i32 = document.getElementById("site-favicon-32");
+          if (svg) svg.setAttribute("href", dark ? "assets/brand/favicon-dark.svg" : "assets/brand/favicon-light.svg");
+          if (i16) i16.setAttribute("href", dark ? "assets/brand/favicon-dark-16.png" : "assets/brand/favicon-16.png");
+          if (i32) i32.setAttribute("href", dark ? "assets/brand/favicon-dark-32.png" : "assets/brand/favicon-32.png");
+        }
+        function applyThemeFromPreference() {
+          document.documentElement.classList.toggle("dark", isDarkFromPreference());
+          syncChromeMeta();
+          syncFavicon();
+          var btn = document.getElementById("theme-toggle");
+          if (!btn) return;
+          var dark = document.documentElement.classList.contains("dark");
+          btn.setAttribute("aria-pressed", dark ? "true" : "false");
+          btn.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
+        }
+        function persist(nextDark) {
+          try {
+            localStorage.setItem(KEY, nextDark ? "dark" : "light");
+          } catch (e) {}
+          document.documentElement.classList.toggle("dark", nextDark);
+          syncChromeMeta();
+          syncFavicon();
+          var btn = document.getElementById("theme-toggle");
+          if (btn) {
+            btn.setAttribute("aria-pressed", nextDark ? "true" : "false");
+            btn.setAttribute("aria-label", nextDark ? "Switch to light mode" : "Switch to dark mode");
+          }
+        }
+        var themeBtn = document.getElementById("theme-toggle");
+        if (themeBtn) {
+          themeBtn.addEventListener("click", function () {
+            persist(!document.documentElement.classList.contains("dark"));
+          });
+        }
+        applyThemeFromPreference();
+        if (window.matchMedia) {
+          window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function () {
+            if (stored() !== null) return;
+            applyThemeFromPreference();
+          });
+        }
+        window.addEventListener("storage", function (e) {
+          if (e.key === KEY) applyThemeFromPreference();
+        });
+      })();
+
+      (function () {
+        var nodes = document.querySelectorAll(".scroll-reveal");
+        if (!nodes.length) return;
+        var reduce =
+          window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (reduce || !("IntersectionObserver" in window)) {
+          nodes.forEach(function (el) {
+            el.classList.add("is-revealed");
+          });
+          return;
+        }
+        var io = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (!entry.isIntersecting) return;
+              entry.target.classList.add("is-revealed");
+              io.unobserve(entry.target);
+            });
+          },
+          { root: null, rootMargin: "0px 0px -10% 0px", threshold: 0.06 }
+        );
+        nodes.forEach(function (el) {
+          io.observe(el);
+        });
+      })();
+
+      var form = document.getElementById("contact-form");
+      var status = document.getElementById("form-status");
+      if (form && status) {
+        // Ensure Formspree always redirects back to *this* page (not Formspree's default thank-you page).
+        (function ensureNextRedirect() {
+          var next = document.getElementById("form-next");
+          if (!next) return;
+          try {
+            next.value = window.location.origin + window.location.pathname + "?thanks=1#contact";
+          } catch (_) {
+            // Absolute URL is preferred by Formspree; this is a best-effort fallback.
+            next.value = "#contact";
+          }
+        })();
+
+        // Success state after Formspree redirect
+        (function () {
+          try {
+            var u = new URL(window.location.href);
+            if (u.searchParams.get("thanks") === "1") {
+              status.textContent = "Thank you for your query. We will reach out to you in 1-2 business days.";
+              status.setAttribute("data-tone", "success");
+              status.setAttribute("data-visible", "true");
+              u.searchParams.delete("thanks");
+              history.replaceState(null, "", u.pathname + (u.searchParams.toString() ? "?" + u.searchParams.toString() : "") + u.hash);
+            }
+          } catch (_) {}
+        })();
+
+        form.addEventListener("submit", function () {
+          var submitBtn = form.querySelector('button[type="submit"]');
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.classList.add("btn-is-loading");
+            submitBtn.setAttribute("aria-busy", "true");
+          }
+          status.textContent = "Sending…";
+          status.setAttribute("data-tone", "");
+          status.setAttribute("data-visible", "true");
+        });
+
+        // iOS/modern browsers can restore this page from bfcache when you return
+        // from the Formspree redirect, preserving the disabled button + spinner.
+        // Reset UI so it never looks “stuck loading”.
+        window.addEventListener("pageshow", function () {
+          var submitBtn = form.querySelector('button[type="submit"]');
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove("btn-is-loading");
+            submitBtn.removeAttribute("aria-busy");
+          }
+          // If we didn't land with a thanks message, hide status by default.
+          if (status.getAttribute("data-tone") !== "success") {
+            status.setAttribute("data-visible", "false");
+          }
+        });
+      }
+
+      (function () {
+        var stage = document.getElementById("project-stage");
+        var strip = document.getElementById("projects-deck");
+        var scroller = document.getElementById("deck-scroller");
+        if (!stage || !strip || !scroller) return;
+
+        var detailPanel = document.getElementById("project-detail-panel");
+        var closeBtn = document.getElementById("project-detail-close");
+        var heroCardMount = stage.querySelector(".detail-hero-card");
+        var heroWrap = stage.querySelector(".detail-hero");
+
+        var metaEl = stage.querySelector('[data-detail="meta"]');
+        var titleEl = stage.querySelector('[data-detail="title"]');
+        var subtitleEl = stage.querySelector('[data-detail="subtitle"]');
+        var featuresEl = stage.querySelector('[data-detail="features"]');
+        var galleryEl = stage.querySelector('[data-detail="gallery"]');
+        var editionEl = stage.querySelector('[data-detail="edition"]');
+        var priceEl = stage.querySelector('[data-detail="price"]');
+        var ctaLabelEl = stage.querySelector('[data-detail="ctaLabel"]');
+
+        var ICONS = {
+          shield:
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z" stroke-linejoin="round"/></svg>',
+          globe:
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M3 12h18" stroke-linecap="round"/><path d="M12 3a13 13 0 010 18M12 3a13 13 0 000 18" stroke-linecap="round"/></svg>',
+          bolt:
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 3L5 14h6l-1 7 8-11h-6l1-7z" stroke-linejoin="round"/></svg>',
+          spark:
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3v6M12 15v6M3 12h6M15 12h6M6 6l3 3M15 15l3 3M18 6l-3 3M9 15l-3 3" stroke-linecap="round"/></svg>',
+          layers:
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 4l9 5-9 5-9-5 9-5z" stroke-linejoin="round"/><path d="M3 14l9 5 9-5M3 19l9 5 9-5" stroke-linejoin="round" opacity=".55"/></svg>',
+          compass:
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M15 9l-2 5-5 2 2-5 5-2z" stroke-linejoin="round"/></svg>',
+        };
+
+        // Palette library: one consistent visual identity per brand tone.
+        // g = card gradient, h = hero gradient (open state), k = ink color.
+        var PAL = {
+          red: { g: "linear-gradient(152deg, #c1553a 0%, #7a241b 55%, #3a0f0c 100%)", h: "radial-gradient(120% 100% at 30% 30%, #f0c0a8, #c06048 50%, #1a0a08 100%)", k: "#fef5ee" },
+          rose: { g: "linear-gradient(152deg, #c14d6d 0%, #7a1f38 55%, #3a0c16 100%)", h: "radial-gradient(120% 100% at 30% 30%, #f0b8c8, #c04868 50%, #1a0610 100%)", k: "#fff0f4" },
+          crimson: { g: "linear-gradient(152deg, #a83245 0%, #6b1523 55%, #2f0a10 100%)", h: "radial-gradient(120% 100% at 30% 30%, #e8b0b8, #a83445 50%, #20060c 100%)", k: "#ffe8ea" },
+          maroon: { g: "linear-gradient(152deg, #8a3a4a 0%, #521f28 55%, #280c10 100%)", h: "radial-gradient(120% 100% at 30% 30%, #e0b0b8, #8a3a4a 50%, #280c10 100%)", k: "#ffe8eb" },
+          orange: { g: "linear-gradient(152deg, #c87a3a 0%, #7a4319 55%, #3a1d08 100%)", h: "radial-gradient(120% 100% at 30% 30%, #f0d0a8, #c07a48 50%, #2c1a08 100%)", k: "#fff5e8" },
+          amber: { g: "linear-gradient(152deg, #c88f53 0%, #7a4923 55%, #2c1a0d 100%)", h: "radial-gradient(120% 100% at 30% 30%, #efd6b3, #b8814b 50%, #2c1a0d 100%)", k: "#fff5e7" },
+          gold: { g: "linear-gradient(152deg, #b98a3a 0%, #7d5720 55%, #2c1f0c 100%)", h: "radial-gradient(120% 100% at 30% 30%, #efe0b0, #b89050 50%, #2c2010 100%)", k: "#fffbe8" },
+          sand: { g: "linear-gradient(152deg, #a5885a 0%, #6e5832 55%, #2c2214 100%)", h: "radial-gradient(120% 100% at 30% 30%, #e8d6b0, #a5885a 50%, #2c2214 100%)", k: "#fff5e0" },
+          bronze: { g: "linear-gradient(152deg, #9e6a4e 0%, #6a4128 55%, #2e180e 100%)", h: "radial-gradient(120% 100% at 30% 30%, #e8c8b0, #a07858 50%, #241208 100%)", k: "#fff0e5" },
+          lime: { g: "linear-gradient(152deg, #8aa83a 0%, #4a6b1d 55%, #1a280a 100%)", h: "radial-gradient(120% 100% at 30% 30%, #d8e8a8, #8ab040 50%, #1a2808 100%)", k: "#f8ffe5" },
+          forest: { g: "linear-gradient(152deg, #3a7a4a 0%, #1d4a28 55%, #081810 100%)", h: "radial-gradient(120% 100% at 30% 30%, #a8d8b8, #3a8050 50%, #081a10 100%)", k: "#e8ffee" },
+          mint: { g: "linear-gradient(152deg, #4cb08a 0%, #1e6a4a 55%, #0a2820 100%)", h: "radial-gradient(120% 100% at 30% 30%, #a8e8d0, #4cb090 50%, #0a2820 100%)", k: "#e8fff4" },
+          teal: { g: "linear-gradient(152deg, #2e4a58 0%, #13222a 55%, #060c10 100%)", h: "radial-gradient(120% 100% at 30% 30%, #a8d2e0, #2f5a70 50%, #060c10 100%)", k: "#effbff" },
+          sky: { g: "linear-gradient(152deg, #4a8abd 0%, #1e4a70 55%, #08182a 100%)", h: "radial-gradient(120% 100% at 30% 30%, #b8dcf0, #4a90c0 50%, #081828 100%)", k: "#e8f4ff" },
+          navy: { g: "linear-gradient(152deg, #3a5a7a 0%, #172a45 55%, #050d18 100%)", h: "radial-gradient(120% 100% at 30% 30%, #b0c8e0, #3a6080 50%, #05101c 100%)", k: "#e8f0ff" },
+          indigo: { g: "linear-gradient(152deg, #6a5ab0 0%, #3a2f6a 55%, #14102c 100%)", h: "radial-gradient(120% 100% at 30% 30%, #c8bde8, #6a5ab0 50%, #14102c 100%)", k: "#f0ecff" },
+          violet: { g: "linear-gradient(152deg, #5a3a7a 0%, #27163d 55%, #0d0516 100%)", h: "radial-gradient(120% 100% at 30% 30%, #d8bde8, #6a4290 50%, #0d0516 100%)", k: "#f7f0ff" },
+          plum: { g: "linear-gradient(152deg, #7a3a8a 0%, #401b4a 55%, #170618 100%)", h: "radial-gradient(120% 100% at 30% 30%, #e0b8e8, #803898 50%, #170618 100%)", k: "#fbecff" },
+          orchid: { g: "linear-gradient(152deg, #a84ab0 0%, #65226f 55%, #2b0a2f 100%)", h: "radial-gradient(120% 100% at 30% 30%, #f0b0e8, #a850b8 50%, #2b0a2f 100%)", k: "#ffe8fb" },
+          steel: { g: "linear-gradient(152deg, #5a6a80 0%, #30394a 55%, #101520 100%)", h: "radial-gradient(120% 100% at 30% 30%, #bac4d0, #606d82 50%, #101520 100%)", k: "#f0f4fa" },
+          slate: { g: "linear-gradient(152deg, #455066 0%, #1f2735 55%, #090e16 100%)", h: "radial-gradient(120% 100% at 30% 30%, #b0bac8, #4a5570 50%, #090e16 100%)", k: "#eef2f8" },
+          charcoal: { g: "linear-gradient(152deg, #4a4a55 0%, #232329 55%, #0a0a0d 100%)", h: "radial-gradient(120% 100% at 30% 30%, #b0b0b8, #4a4a55 50%, #0a0a0d 100%)", k: "#f4f4f6" },
+          graphite: { g: "linear-gradient(152deg, #3a3a42 0%, #1a1a1f 55%, #07070a 100%)", h: "radial-gradient(120% 100% at 30% 30%, #aaaab0, #3a3a42 50%, #07070a 100%)", k: "#f0f0f2" },
+          iron: { g: "linear-gradient(152deg, #5a5a66 0%, #2e2e36 55%, #0c0c11 100%)", h: "radial-gradient(120% 100% at 30% 30%, #b0b0bc, #5a5a66 50%, #0c0c11 100%)", k: "#f2f2f6" },
+        };
+
+        function mk(id, pal, cfg) {
+          var p = PAL[pal];
+          return {
+            id: id,
+            brand: "CODETRONIK",
+            sub: cfg.sub,
+            code: cfg.code,
+            category: cfg.cat,
+            client: cfg.client,
+            number: cfg.num,
+            year: cfg.year,
+            title: cfg.title,
+            subtitle: cfg.sub2,
+            engagement: cfg.eng,
+            features: cfg.features,
+            gradient: p.g,
+            heroGradient: p.h,
+            ink: p.k,
+            cta: cfg.cta || "Discuss a similar build",
+          };
+        }
+
+        var F = {
+          // Shorthand factory so project data reads like a table.
+          sec: { icon: "shield", title: "SECURE", sub: "AUDIT-READY" },
+          sca: { icon: "shield", title: "SCALE", sub: "CAMPAIGN-PROOF" },
+          grd: { icon: "shield", title: "GROUNDED", sub: "CITED" },
+          glb: { icon: "globe", title: "GLOBAL", sub: "MULTI-MARKET" },
+          emb: { icon: "compass", title: "EMBEDDED", sub: "IN-CONTEXT" },
+          seo: { icon: "globe", title: "SEO", sub: "STRUCTURED" },
+          fas: { icon: "bolt", title: "FAST", sub: "PERF BUDGET" },
+          ins: { icon: "bolt", title: "INSTANT", sub: "EDGE-CACHED" },
+          liv: { icon: "bolt", title: "LIVE", sub: "EVENT-DRIVEN" },
+          clr: { icon: "layers", title: "CLEAR", sub: "DOMAIN MODEL" },
+          ownd: { icon: "layers", title: "OWNED", sub: "EDITOR-FIRST" },
+          mea: { icon: "spark", title: "MEASURED", sub: "EVAL SUITE" },
+          cal: { icon: "spark", title: "CALM", sub: "ON-CALL READY" },
+        };
+
+        var projects = [
+          (function () {
+            var p = mk("internal firebase admin", "slate", { code: "CT-001", cat: "Internal Tools", sub: "ADMIN", client: "Ops & admin (internal)", num: "0001", year: "2026", eng: "Private build",
+              title: "Firebase backed management system with role based access.",
+              sub2: "A secure admin foundation for day-to-day operations: structured access patterns, safe CRUD guardrails, and least-privilege enforcement via Firestore Rules.",
+              features: [F.sec, F.clr, F.cal],
+              cta: "Build an internal tool like this" });
+            p.gallery = [
+              { src: "assets/projects/management-system/client-dashboard.png", alt: "Client dashboard with projects overview and subscription summary" },
+              { src: "assets/projects/management-system/client-project-detail.png", alt: "Client project detail with timeline, files, and activity" }
+            ];
+            return p;
+          })(),
+          (function () {
+            var p = mk("RAG Based personal knowledge base", "violet", {
+              code: "CT-002",
+              cat: "AI Tools",
+              sub: "RAG",
+              client: "Personal knowledge base",
+              num: "0002",
+              year: "2026",
+              eng: "Private build",
+              title: "RAG Based personal knowledge base",
+              sub2: "Index documents once, ask your library anything, and get grounded answers with citations. Designed to stay calm and fast across desktop and mobile.",
+              features: [F.grd, F.clr, F.fas],
+              cta: "Build a knowledge base like this",
+            });
+            p.gallery = [
+              { src: "assets/projects/knowledge-base/overview.png", alt: "RAG personal knowledge base interface overview" }
+            ];
+            return p;
+          })(),
+          (function () {
+            var p = mk("ai voice agent", "indigo", {
+              code: "CT-003",
+              cat: "AI Tools",
+              sub: "VOICE",
+              client: "Voice assistant",
+              num: "0003",
+              year: "2026",
+              eng: "Private build",
+              title: "AI Voice Agent",
+              sub2: "A low latency voice interface with streaming responses, built to stay fast and readable on desktop and mobile.",
+              features: [F.fas, F.clr, F.cal],
+              cta: "Build a voice agent like this",
+            });
+            p.gallery = [
+              { src: "assets/projects/ai-agent/overview.png", alt: "AI voice agent interface overview" }
+            ];
+            return p;
+          })(),
+          (function () {
+            var p = mk("semantic document search engine", "steel", {
+              code: "CT-004",
+              cat: "AI Tools",
+              sub: "SEARCH",
+              client: "Semantic search",
+              num: "0004",
+              year: "2026",
+              eng: "Private build",
+              title: "Semantic Document Search Engine",
+              sub2: "Local semantic search over PDFs, docs, and markdown: index once, retrieve by meaning, and keep everything on-device.",
+              features: [F.grd, F.clr, F.fas],
+              cta: "Build a semantic search tool like this",
+            });
+            p.gallery = [
+              { src: "assets/projects/semantic-search/overview.png", alt: "Semantic document search engine interface overview" }
+            ];
+            return p;
+          })(),
+          (function () {
+            var p = mk("simple module gui selector", "graphite", {
+              code: "CT-005",
+              cat: "Internal Tools",
+              sub: "GUI",
+              client: "Module selection",
+              num: "0005",
+              year: "2026",
+              eng: "Private build",
+              title: "Simple Module GUI Selector",
+              sub2: "A focused desktop flow for course profiles, module picks, reservations, and a clear overview so selections stay consistent end to end.",
+              features: [F.clr, F.sec, F.cal],
+              cta: "Build a desktop selector like this",
+            });
+            p.gallery = [
+              { src: "assets/projects/module-gui-selector/overview.png", alt: "Simple Module GUI Selector desktop interface overview" }
+            ];
+            return p;
+          })(),
+          (function () {
+            var p = mk("student management system", "slate", {
+              code: "CT-006",
+              cat: "Internal Tools",
+              sub: "REGISTRY",
+              client: "Student affairs console",
+              num: "0006",
+              year: "2026",
+              eng: "Private build",
+              title: "Student Management System",
+              sub2: "Registrar ready overview with enrolment KPIs, cohort search, and master records for programmes, GPA, and workflow holds in one calm console.",
+              features: [F.sec, F.clr, F.cal],
+              cta: "Build a student operations console like this",
+            });
+            p.gallery = [
+              { src: "assets/projects/student-management-system/overview.png", alt: "Student management enrollment and records dashboard overview" },
+              { src: "assets/projects/student-management-system/profile.png", alt: "Student management master record and academic profile view" }
+            ];
+            return p;
+          })()
+        ];
+
+        var state = {
+          mode: "deck",
+          selectedId: projects[0].id,
+          previewId: null,
+          lastFocus: null,
+          setWidth: 0, // width of one full project-set inside the strip
+        };
+        // Shelf rendering mode — auto-selected from project count.
+        //   < ENDLESS_THRESHOLD  → single centered copy (no wrap)
+        //   ≥ ENDLESS_THRESHOLD  → three copies end-to-end + wrap normalizer,
+        //                          so the shelf feels truly endless.
+        // Tune ENDLESS_THRESHOLD if you want the ribbon to kick in sooner
+        // or later. 10 is the sweet spot: that's when a single copy starts
+        // spilling past the viewport on typical desktop widths and the
+        // user gains something real from the wrap.
+        var ENDLESS_THRESHOLD = 10;
+        var COPIES = projects.length >= ENDLESS_THRESHOLD ? 3 : 1;
+        var MIDDLE_COPY = COPIES > 1 ? 1 : 0;
+
+        // Keep the helper caption honest: in endless mode the user can
+        // actually drag / scroll / use arrow keys; in the small-catalog
+        // mode all they can do is hover + click.
+        var deckPromptEl = stage.querySelector("[data-deck-prompt]");
+        if (deckPromptEl) {
+          deckPromptEl.textContent = COPIES > 1
+            ? "Browse the shelf. Drag, scroll, or arrow keys."
+            : "Hover a card, click or press Enter to open";
+        }
+        var cardEls = [];        // all rendered buttons (length = n * COPIES)
+        var canonicalCards = []; // canonical set for keyboard / AT (length = n)
+        var CARD_W_DESKTOP = 184;
+        var CARD_H_DESKTOP = 252;
+        var CARD_W_MOBILE = 124;
+        var CARD_H_MOBILE = 170;
+        var OPEN_DELAY_MS = 380; // must track .is-opening transition in CSS
+
+        function prefersReducedMotion() {
+          return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        }
+        function isMobile() {
+          return window.matchMedia && window.matchMedia("(max-width: 767px)").matches;
+        }
+
+        /** Heroicons-style outline marks for deck card category chips (matches `p.sub`). */
+        function subCategoryIconSvg(sub) {
+          var code = String(sub || "").trim().toUpperCase();
+          var H =
+            '<svg class="card-chip__svg" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false" aria-hidden="true">';
+          var T = "</svg>";
+          switch (code) {
+            case "ADMIN":
+              return (
+                H +
+                '<path d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"/>' +
+                T
+              );
+            case "RAG":
+              return (
+                H +
+                '<path d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25"/>' +
+                T
+              );
+            case "VOICE":
+              return (
+                H +
+                '<path d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z"/>' +
+                T
+              );
+            case "SEARCH":
+              return (
+                H +
+                '<path d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>' +
+                T
+              );
+            case "GUI":
+              return (
+                H +
+                '<path d="M6 20.25h12m-7.5-3v3m3-3v3m-10.125-3h17.25c.621 0 1.125-.504 1.125-1.125V4.875c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125Z"/>' +
+                T
+              );
+            case "REGISTRY":
+              return (
+                H +
+                '<path d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"/>' +
+                T
+              );
+            default:
+              return (
+                H +
+                '<path d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-8.69-6.44-2.12-2.12a1.5 1.5 0 0 0-1.061-.44H4.5A2.25 2.25 0 0 0 2.25 6v12a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9a2.25 2.25 0 0 0-2.25-2.25h-5.379a1.5 1.5 0 0 1-1.06-.44Z"/>' +
+                T
+              );
+          }
+        }
+
+        function buildCardFace(p) {
+          var face = document.createElement("div");
+          face.className = "card-face";
+          face.style.setProperty("--card-gradient", p.gradient);
+          face.style.setProperty("--card-ink", p.ink);
+          face.innerHTML = [
+            '<div>',
+            '  <div class="card-brand">' + p.brand + "</div>",
+            '  <div class="card-sub"><span class="card-chip" aria-hidden="true">' +
+              subCategoryIconSvg(p.sub) +
+              "</span>" +
+              p.sub +
+              "</div>",
+            "</div>",
+            '<div class="card-nums"><span class="dots">****</span><span>' + p.number + "</span></div>",
+            '<div class="card-foot"><span>' + p.code + "</span><span>" + p.year + "</span></div>",
+          ].join("");
+          return face;
+        }
+
+        function computeStripLayout() {
+          var mobile = isMobile();
+          var cardW = mobile ? CARD_W_MOBILE : CARD_W_DESKTOP;
+          var cardH = mobile ? CARD_H_MOBILE : CARD_H_DESKTOP;
+          // Books-on-shelf packing: just 18% overlap so each card's face
+          // stays mostly visible while still reading as a continuous row.
+          var spacing = Math.round(cardW * (mobile ? 0.86 : 0.82));
+          var minPad = mobile ? 20 : 40;
+          var n = projects.length;
+          // One full set tiles at n * spacing (so copy N starts exactly at
+          // n * spacing from copy 0 — seamless repetition).
+          var setWidth = n * spacing;
+
+          // When the project set is small enough to fit the viewport in a
+          // single copy, widen the edge padding so the cards appear centered
+          // rather than left-aligned against the fade overlay.
+          var cardsSpan = (n - 1) * spacing + cardW;
+          var viewportW = scroller.clientWidth || 0;
+          var pad = minPad;
+          if (COPIES === 1 && viewportW > cardsSpan + minPad * 2) {
+            pad = Math.floor((viewportW - cardsSpan) / 2);
+          }
+
+          // Preserve perceived scroll position across relayout. We store the
+          // fraction of the canonical copy we were viewing, then re-apply
+          // after the new set-width is known.
+          var priorSetWidth = state.setWidth;
+          var priorLeft = scroller.scrollLeft;
+          var priorFraction = null;
+          if (priorSetWidth) {
+            priorFraction = (priorLeft - MIDDLE_COPY * priorSetWidth) / priorSetWidth;
+          }
+
+          state.setWidth = setWidth;
+          // Strip holds all COPIES end-to-end, plus the trailing card's own
+          // width + padding so the last card isn't clipped.
+          var stripW = pad * 2 + COPIES * setWidth + (cardW - spacing);
+          strip.style.setProperty("--strip-w", stripW + "px");
+
+          cardEls.forEach(function (el, i) {
+            var copy = Math.floor(i / n);
+            var idx = i % n; // logical index within the project list
+            var globalIdx = copy * n + idx;
+            var cx = pad + globalIdx * spacing;
+            // Deterministic per-project variation so each project always gets
+            // the same tilt across every copy (reads as a real shelf, not a
+            // shuffle).
+            var base = Math.sin(idx * 0.9 + 0.4) * 2.6;
+            var jitter = (((idx * 37) % 7) - 3) * 0.4;
+            var rot = base + jitter;               // 2D lean
+            var roy = Math.sin(idx * 0.7) * 4.5;    // 3D rotateY → shelf depth
+            var cy = Math.sin(idx * 0.6) * 1.6;    // tiny vertical jiggle
+            var cz = Math.cos(idx * 0.5) * 8;      // tiny translateZ → some books forward
+
+            el.style.setProperty("--cw", cardW + "px");
+            el.style.setProperty("--ch", cardH + "px");
+            el.style.setProperty("--cx", cx + "px");
+            el.style.setProperty("--cy", cy.toFixed(2) + "px");
+            el.style.setProperty("--cz", cz.toFixed(2) + "px");
+            el.style.setProperty("--rot", rot.toFixed(2) + "deg");
+            el.style.setProperty("--roy", roy.toFixed(2) + "deg");
+            el.style.zIndex = String(10 + idx);
+          });
+
+          if (priorFraction == null) {
+            // First layout: park at the canonical copy start.
+            scroller.scrollLeft = MIDDLE_COPY * setWidth;
+          } else {
+            // Resize: restore the same fractional position in the new
+            // canonical copy so the user sees the same content.
+            scroller.scrollLeft = MIDDLE_COPY * setWidth + priorFraction * setWidth;
+          }
+        }
+
+        // Endless-scroll normalizer: when scrollLeft drifts out of the
+        // middle band [setWidth * 0.5, setWidth * 2.5], rewind by one
+        // set-width. The rewind is invisible because copy N and copy N±1
+        // are pixel-identical. No-op when COPIES === 1 (single render,
+        // nothing to wrap).
+        function normalizeScroll() {
+          if (COPIES <= 1) return;
+          var sw = state.setWidth;
+          if (!sw) return;
+          var low = sw * 0.5;
+          var high = sw * 2.5;
+          var sl = scroller.scrollLeft;
+          if (sl < low) {
+            scroller.scrollLeft = sl + sw;
+            drag.startLeft += sw; // keep drag math coherent mid-gesture
+          } else if (sl > high) {
+            scroller.scrollLeft = sl - sw;
+            drag.startLeft -= sw;
+          }
+        }
+
+        // Preview state is synced across ALL copies by project id, so the
+        // lift / dim reads as a single coherent moment.
+        function setPreview(id) {
+          if (state.mode !== "deck") return;
+          state.previewId = id;
+          cardEls.forEach(function (el) {
+            var cid = el.getAttribute("data-card-id");
+            el.classList.toggle("is-preview", cid === id);
+            el.classList.toggle("is-dimmed", id !== null && cid !== id);
+          });
+        }
+
+        function renderDetail(p) {
+          heroCardMount.innerHTML = "";
+          heroCardMount.appendChild(buildCardFace(p));
+          heroWrap.style.setProperty("--hero-gradient", p.heroGradient);
+
+          metaEl.textContent = p.category + " · " + p.client;
+          titleEl.textContent = p.title;
+          subtitleEl.textContent = p.subtitle;
+
+          featuresEl.innerHTML = "";
+          p.features.forEach(function (f) {
+            var item = document.createElement("div");
+            item.className = "detail-feature";
+            item.setAttribute("role", "listitem");
+            item.innerHTML =
+              '<span class="f-icon" aria-hidden="true">' + (ICONS[f.icon] || ICONS.shield) + "</span>" +
+              '<span class="f-title">' + f.title + "</span>" +
+              '<span class="f-sub">' + f.sub + "</span>";
+            featuresEl.appendChild(item);
+          });
+
+          if (galleryEl) {
+            galleryEl.innerHTML = "";
+            var shots = Array.isArray(p.gallery) ? p.gallery : [];
+            if (!shots.length) {
+              galleryEl.style.display = "none";
+            } else {
+              galleryEl.style.display = "";
+              shots.forEach(function (s) {
+                var fig = document.createElement("figure");
+                fig.className = "detail-shot";
+                fig.innerHTML =
+                  '<img src="' +
+                  s.src +
+                  '" alt="' +
+                  (s.alt || "") +
+                  '" loading="lazy" decoding="async" />';
+                galleryEl.appendChild(fig);
+              });
+            }
+          }
+
+          editionEl.textContent = "#" + p.number;
+          priceEl.textContent = p.engagement;
+          ctaLabelEl.textContent = p.cta;
+        }
+
+        function openDetail(id, opts) {
+          var p = projects.find(function (x) { return x.id === id; });
+          if (!p) return;
+          opts = opts || {};
+          state.selectedId = id;
+          state.mode = "detail";
+          // Prefer the middle-copy (canonical) card as the focus return
+          // target — that's the one reported to AT.
+          state.lastFocus = canonicalCards.find(function (el) {
+            return el.getAttribute("data-card-id") === id;
+          });
+
+          cardEls.forEach(function (el) {
+            var cid = el.getAttribute("data-card-id");
+            if (el.getAttribute("data-copy") === String(MIDDLE_COPY)) {
+              el.setAttribute("aria-expanded", cid === id ? "true" : "false");
+            }
+            el.setAttribute("tabindex", "-1");
+            // Keep the opening card's is-opening class; strip others.
+            if (!el.classList.contains("is-opening")) {
+              el.classList.remove("is-preview", "is-dimmed");
+            }
+          });
+
+          renderDetail(p);
+          stage.setAttribute("data-state", "detail");
+          detailPanel.setAttribute("aria-hidden", "false");
+
+          // Persist the opened project in the URL for deep-linking and
+          // shareable state (Vercel Web Interface Guidelines).
+          if (!opts.suppressHash) {
+            try {
+              history.replaceState(null, "", "#project-" + id);
+            } catch (_) {}
+          }
+
+          if (!opts.suppressFocus) {
+            window.setTimeout(function () { closeBtn.focus(); }, 180);
+          }
+        }
+
+        function closeDetail(opts) {
+          // Cancel any in-flight pull-off animation (e.g. user tapped a
+          // card then hit Escape before the 380ms delay elapsed).
+          cancelOpening();
+          if (state.mode === "deck") return;
+          opts = opts || {};
+          state.mode = "deck";
+          stage.setAttribute("data-state", "deck");
+          detailPanel.setAttribute("aria-hidden", "true");
+
+          cardEls.forEach(function (el) {
+            el.classList.remove("is-opening", "is-preview", "is-dimmed");
+            if (el.getAttribute("data-copy") === String(MIDDLE_COPY)) {
+              var cid = el.getAttribute("data-card-id");
+              el.setAttribute("aria-expanded", "false");
+              el.setAttribute("tabindex", cid === state.selectedId ? "0" : "-1");
+            } else {
+              el.setAttribute("tabindex", "-1");
+            }
+          });
+
+          if (!opts.suppressHash) {
+            try {
+              history.replaceState(null, "", window.location.pathname + window.location.search);
+            } catch (_) {}
+          }
+
+          if (!opts.suppressFocus) {
+            window.setTimeout(function () {
+              var target = state.lastFocus ||
+                canonicalCards.find(function (el) { return el.getAttribute("data-card-id") === state.selectedId; }) ||
+                canonicalCards[0];
+              if (target) {
+                ensureInView(target);
+                target.focus({ preventScroll: true });
+              }
+            }, 180);
+          }
+        }
+
+        // --- Pull-off-the-shelf: run the .is-opening animation on the
+        // clicked card (and its sibling copies so the motion reads as one
+        // object being lifted), then hand off to the detail view. -----------
+        var openingTimerId = 0;
+        function pullOffAndOpen(id) {
+          // Idempotent: if we're already opening something, ignore.
+          if (state._opening) return;
+          state._opening = true;
+
+          // Mirror open state to AT immediately so the announced semantics
+          // don't lag the pull-off visuals.
+          cardEls.forEach(function (el) {
+            if (el.getAttribute("data-copy") === String(MIDDLE_COPY)) {
+              el.setAttribute(
+                "aria-expanded",
+                el.getAttribute("data-card-id") === id ? "true" : "false",
+              );
+            }
+            if (el.getAttribute("data-card-id") === id) {
+              el.classList.add("is-opening");
+              el.classList.remove("is-dimmed", "is-preview");
+            } else {
+              el.classList.add("is-dimmed");
+              el.classList.remove("is-preview");
+            }
+          });
+
+          var delay = prefersReducedMotion() ? 0 : OPEN_DELAY_MS;
+          openingTimerId = window.setTimeout(function () {
+            openingTimerId = 0;
+            state._opening = false;
+            openDetail(id);
+          }, delay);
+        }
+        function cancelOpening() {
+          if (!openingTimerId && !state._opening) return;
+          if (openingTimerId) {
+            window.clearTimeout(openingTimerId);
+            openingTimerId = 0;
+          }
+          state._opening = false;
+          // Return cards to resting state.
+          cardEls.forEach(function (el) {
+            el.classList.remove("is-opening", "is-dimmed", "is-preview");
+            if (el.getAttribute("data-copy") === String(MIDDLE_COPY)) {
+              el.setAttribute("aria-expanded", "false");
+            }
+          });
+        }
+
+        // --- Scroll helpers ---
+        function ensureInView(el) {
+          if (!el) return;
+          var r = el.getBoundingClientRect();
+          var s = scroller.getBoundingClientRect();
+          // Add margin so the focused card isn't under the edge fade mask.
+          var margin = Math.max(40, s.width * 0.1);
+          if (r.left < s.left + margin) {
+            scroller.scrollBy({ left: r.left - s.left - margin, behavior: prefersReducedMotion() ? "auto" : "smooth" });
+          } else if (r.right > s.right - margin) {
+            scroller.scrollBy({ left: r.right - s.right + margin, behavior: prefersReducedMotion() ? "auto" : "smooth" });
+          }
+        }
+
+        function pageWidth() {
+          return Math.max(240, scroller.clientWidth * 0.7);
+        }
+
+        function scrollByAmount(delta) {
+          scroller.scrollBy({ left: delta, behavior: prefersReducedMotion() ? "auto" : "smooth" });
+        }
+
+        // --- Keyboard on cards (middle copy only) ---
+        // Keyboard navigation walks ONLY through the canonical (middle-copy)
+        // cards so screen readers and Tab users see exactly one row of
+        // 24 projects. Arrow keys wrap end-to-end for a truly endless feel.
+        function handleCardKey(e) {
+          var keys = ["ArrowLeft", "ArrowRight", "Home", "End", "Enter", " ", "PageUp", "PageDown"];
+          if (keys.indexOf(e.key) === -1) return;
+          e.preventDefault();
+          var id = e.currentTarget.getAttribute("data-card-id");
+          var n = projects.length;
+          var idx = projects.findIndex(function (x) { return x.id === id; });
+          if (e.key === "Enter" || e.key === " ") {
+            pullOffAndOpen(id);
+            return;
+          }
+
+          var next = idx;
+          if (e.key === "ArrowLeft") next = (idx - 1 + n) % n;
+          if (e.key === "ArrowRight") next = (idx + 1) % n;
+          if (e.key === "Home") next = 0;
+          if (e.key === "End") next = n - 1;
+          if (e.key === "PageUp") next = (idx - 4 + n * 2) % n;
+          if (e.key === "PageDown") next = (idx + 4) % n;
+
+          var target = canonicalCards[next];
+          if (target) {
+            canonicalCards.forEach(function (el) { el.setAttribute("tabindex", "-1"); });
+            target.setAttribute("tabindex", "0");
+            ensureInView(target);
+            target.focus({ preventScroll: true });
+            setPreview(target.getAttribute("data-card-id"));
+          }
+        }
+
+        // --- Keyboard on the scroller (when no card is focused) ---
+        scroller.addEventListener("keydown", function (e) {
+          if (e.target !== scroller) return;
+          if (e.key === "ArrowLeft") { e.preventDefault(); scrollByAmount(-pageWidth() / 3); }
+          if (e.key === "ArrowRight") { e.preventDefault(); scrollByAmount(pageWidth() / 3); }
+          if (e.key === "PageUp") { e.preventDefault(); scrollByAmount(-pageWidth()); }
+          if (e.key === "PageDown") { e.preventDefault(); scrollByAmount(pageWidth()); }
+          // Home/End lose their classic meaning on an endless shelf; map
+          // them to the first/last canonical card as a best-effort.
+          if (e.key === "Home" && canonicalCards[0]) { e.preventDefault(); ensureInView(canonicalCards[0]); }
+          if (e.key === "End" && canonicalCards.length) { e.preventDefault(); ensureInView(canonicalCards[canonicalCards.length - 1]); }
+        });
+
+        // --- Pointer drag (click-and-drag to pan) ---
+        // Gate by a movement threshold so taps on cards still register as clicks.
+        var drag = { active: false, startX: 0, startLeft: 0, suppressClick: false, pid: 0 };
+        var DRAG_THRESHOLD = 4;
+        scroller.addEventListener("pointerdown", function (e) {
+          if (e.pointerType === "mouse" && e.button !== 0) return;
+          drag.active = true;
+          drag.startX = e.clientX;
+          drag.startLeft = scroller.scrollLeft;
+          drag.suppressClick = false;
+          drag.pid = e.pointerId;
+        });
+        scroller.addEventListener("pointermove", function (e) {
+          if (!drag.active) return;
+          var dx = e.clientX - drag.startX;
+          if (!drag.suppressClick && Math.abs(dx) > DRAG_THRESHOLD) {
+            drag.suppressClick = true;
+            scroller.classList.add("is-dragging");
+            try { scroller.setPointerCapture(drag.pid); } catch (_) {}
+          }
+          if (drag.suppressClick) {
+            scroller.scrollLeft = drag.startLeft - dx;
+          }
+        });
+        function endDrag() {
+          drag.active = false;
+          scroller.classList.remove("is-dragging");
+          window.setTimeout(function () { drag.suppressClick = false; }, 0);
+        }
+        scroller.addEventListener("pointerup", endDrag);
+        scroller.addEventListener("pointercancel", endDrag);
+        scroller.addEventListener("lostpointercapture", endDrag);
+
+        // --- Wheel: map vertical wheels to horizontal scroll only when intent is horizontal
+        scroller.addEventListener(
+          "wheel",
+          function (e) {
+            // If user is holding shift OR wheel is already horizontal, let native handle it.
+            // If wheel is clearly vertical and pointer is over the strip, translate it to horizontal so
+            // users on a mouse-wheel can browse without pinning the page.
+            var absX = Math.abs(e.deltaX);
+            var absY = Math.abs(e.deltaY);
+            if (absY > absX && absY > 8) {
+              scroller.scrollLeft += e.deltaY;
+              e.preventDefault();
+            }
+          },
+          { passive: false },
+        );
+
+        // --- Build the strip (3 identical copies for endless illusion) ---
+        strip.innerHTML = "";
+        for (var copy = 0; copy < COPIES; copy++) {
+          var isCanonical = copy === MIDDLE_COPY;
+          projects.forEach(function (p, idx) {
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "deck-card";
+            btn.setAttribute("data-card-id", p.id);
+            btn.setAttribute("data-copy", String(copy));
+            btn.setAttribute("aria-controls", "project-detail-panel");
+            if (isCanonical) {
+              btn.setAttribute("aria-expanded", "false");
+              btn.setAttribute("aria-label", p.category + ". " + p.title + ". Press Enter to pull it off the shelf.");
+              btn.setAttribute("tabindex", idx === 0 ? "0" : "-1");
+            } else {
+              // Visual duplicates — hidden from AT so each project is heard
+              // exactly once. Still interactive for pointer users.
+              btn.setAttribute("aria-hidden", "true");
+              btn.setAttribute("tabindex", "-1");
+            }
+            btn.appendChild(buildCardFace(p));
+
+            btn.addEventListener("mouseenter", function (projId) {
+              return function () { setPreview(projId); };
+            }(p.id));
+            btn.addEventListener("focus", function (projId) {
+              return function () { setPreview(projId); };
+            }(p.id));
+            btn.addEventListener("click", function (projId) {
+              return function (e) {
+                if (drag.suppressClick) { e.preventDefault(); e.stopPropagation(); return; }
+                pullOffAndOpen(projId);
+              };
+            }(p.id));
+            btn.addEventListener("keydown", handleCardKey);
+
+            strip.appendChild(btn);
+            cardEls.push(btn);
+            if (isCanonical) canonicalCards.push(btn);
+          });
+        }
+
+        // Reset preview when the pointer leaves the strip (prevents flicker across overlaps).
+        strip.addEventListener("mouseleave", function () { setPreview(null); });
+        strip.addEventListener("focusout", function (e) {
+          if (!strip.contains(e.relatedTarget)) setPreview(null);
+        });
+
+        // Close + ESC
+        closeBtn.addEventListener("click", closeDetail);
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && state.mode === "detail") { e.preventDefault(); closeDetail(); }
+        });
+
+        // Endless normalize on every scroll frame (RAF-throttled).
+        var scrollRaf = 0;
+        scroller.addEventListener(
+          "scroll",
+          function () {
+            if (scrollRaf) return;
+            scrollRaf = window.requestAnimationFrame(function () {
+              scrollRaf = 0;
+              normalizeScroll();
+            });
+          },
+          { passive: true },
+        );
+
+        // Initial layout + resize
+        computeStripLayout();
+        var resizeTimer;
+        window.addEventListener("resize", function () {
+          window.clearTimeout(resizeTimer);
+          resizeTimer = window.setTimeout(computeStripLayout, 80);
+        });
+
+        // Pre-populate detail for fast open (no flash of empty content on first click)
+        renderDetail(projects[0]);
+
+        // --- Deep-link: honor #project-<id> and respond to back/forward ---
+        function idFromHash(hash) {
+          if (!hash) return null;
+          var m = /^#project-(.+)$/.exec(hash);
+          if (!m) return null;
+          var id = m[1];
+          return projects.some(function (p) { return p.id === id; }) ? id : null;
+        }
+        function syncFromHash() {
+          var id = idFromHash(window.location.hash);
+          if (id) {
+            if (state.mode !== "detail" || state.selectedId !== id) {
+              openDetail(id, { suppressHash: true, suppressFocus: true });
+              // Bring the canonical (middle-copy) card into view.
+              var card = canonicalCards.find(function (el) { return el.getAttribute("data-card-id") === id; });
+              if (card) ensureInView(card);
+            }
+          } else if (state.mode === "detail") {
+            closeDetail({ suppressHash: true, suppressFocus: true });
+          }
+        }
+        window.addEventListener("hashchange", syncFromHash);
+        // Apply any hash that was present at load (e.g. shared link).
+        syncFromHash();
+      })();
+
+      // Mobile menu (hamburger): mirrors desktop toolbar links.
+      (function () {
+        var btn = document.getElementById("mobile-menu-btn");
+        var panel = document.getElementById("mobile-menu-panel");
+        var scrim = document.getElementById("mobile-menu-scrim");
+        var closeBtn = document.getElementById("mobile-menu-close");
+        if (!btn || !panel || !scrim) return;
+
+        function setOpen(next) {
+          panel.setAttribute("data-open", next ? "true" : "false");
+          scrim.setAttribute("data-open", next ? "true" : "false");
+          btn.setAttribute("aria-expanded", next ? "true" : "false");
+          btn.setAttribute("aria-label", next ? "Close menu" : "Open menu");
+          document.body.classList.toggle("menu-open", !!next);
+        }
+        function isOpen() {
+          return panel.getAttribute("data-open") === "true";
+        }
+        function toggle() {
+          setOpen(!isOpen());
+        }
+        function close() {
+          setOpen(false);
+        }
+
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          toggle();
+        });
+
+        if (closeBtn) {
+          closeBtn.addEventListener("click", function () {
+            close();
+            btn.focus();
+          });
+        }
+
+        // Close on outside click.
+        document.addEventListener("click", function (e) {
+          if (!isOpen()) return;
+          var t = e.target;
+          if (panel.contains(t) || btn.contains(t) || scrim.contains(t)) return;
+          close();
+        });
+
+        // Close on scrim tap.
+        scrim.addEventListener("click", function () {
+          if (!isOpen()) return;
+          close();
+        });
+
+        // Close on Escape.
+        document.addEventListener("keydown", function (e) {
+          if (e.key !== "Escape") return;
+          if (!isOpen()) return;
+          e.preventDefault();
+          close();
+          btn.focus();
+        });
+
+        // Close after choosing a link.
+        panel.querySelectorAll("a[href^='#']").forEach(function (a) {
+          a.addEventListener("click", function () {
+            close();
+          });
+        });
+
+        // If viewport becomes desktop, ensure closed.
+        window.addEventListener("resize", function () {
+          if (window.matchMedia && window.matchMedia("(min-width: 768px)").matches) close();
+        });
+      })();
+
+      // Lightbox for project screenshots.
+      (function () {
+        var stage = document.getElementById("project-stage");
+        if (!stage) return;
+        var lb = document.getElementById("lightbox");
+        var lbImg = document.getElementById("lightbox-img");
+        var lbClose = document.getElementById("lightbox-close");
+        var lbScrim = document.getElementById("lightbox-scrim");
+        if (!lb || !lbImg || !lbClose || !lbScrim) return;
+
+        function open(src, alt) {
+          lbImg.src = src;
+          lbImg.alt = alt || "Project screenshot";
+          lb.setAttribute("data-open", "true");
+          document.body.classList.add("menu-open"); // reuse scroll lock
+          window.setTimeout(function () { lbClose.focus(); }, 0);
+        }
+        function close() {
+          lb.setAttribute("data-open", "false");
+          lbImg.src = "";
+          document.body.classList.remove("menu-open");
+        }
+
+        stage.addEventListener("click", function (e) {
+          var t = e.target;
+          if (!(t && t.tagName === "IMG")) return;
+          var fig = t.closest(".detail-shot");
+          if (!fig) return;
+          e.preventDefault();
+          open(t.currentSrc || t.src, t.alt);
+        });
+        lbClose.addEventListener("click", close);
+        lbScrim.addEventListener("click", close);
+        document.addEventListener("keydown", function (e) {
+          if (e.key !== "Escape") return;
+          if (lb.getAttribute("data-open") !== "true") return;
+          e.preventDefault();
+          close();
+        });
+      })();
+    </script>
+  </body>
+</html>
